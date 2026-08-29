@@ -9,7 +9,20 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property int $user_id
+ * @property int $problem_id
+ * @property Level $level
+ * @property AttemptStatus $status
+ * @property int $current_step
+ * @property int $target_minutes
+ * @property Carbon $started_at
+ * @property Carbon|null $finished_at
+ * @property int|null $duration_seconds
+ * @property DurationSource|null $duration_source
+ */
 #[Fillable([
     'user_id', 'problem_id', 'level', 'status', 'current_step', 'target_minutes',
     'started_at', 'finished_at', 'duration_seconds', 'duration_source',
