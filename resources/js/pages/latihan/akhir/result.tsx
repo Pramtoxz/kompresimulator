@@ -138,9 +138,3 @@ export default function AttemptResult({
     );
 }
 
-AttemptResult.layout = {
-    breadcrumbs: [
-        { title: 'Latihan', href: index() },
-        { title: 'Hasil', href: index() },
-    ],
-};

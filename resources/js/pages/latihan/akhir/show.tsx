@@ -1,11 +1,10 @@
 import { Head } from '@inertiajs/react';
-import AttemptTimer from '@/components/latihan/attempt-timer';
-import CurrentStepDock from '@/components/latihan/current-step-dock';
+import DrillHeader from '@/components/latihan/drill-header';
 import FinishForm from '@/components/latihan/finish-form';
 import ProblemPanel from '@/components/latihan/problem-panel';
+import StepDock from '@/components/latihan/step-dock';
 import StepList from '@/components/latihan/step-list';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { index } from '@/routes/latihan';
 import type { PracticeAttempt, PracticeProblem } from '@/types/latihan';
 
 type Props = {
@@ -14,59 +13,59 @@ type Props = {
 };
 
 export default function AttemptShow({ attempt, problem }: Props) {
+    const isLastStep = attempt.current_step >= attempt.steps.length;
+
     return (
         <>
-            <Head title="Latihan berjalan" />
+            <Head title={problem.title ?? 'Latihan'} />
 
-            <div className="safe-x mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-4 pt-4 pb-44 sm:px-6 md:pb-8 lg:px-8">
-                <div className="bg-background/95 border-sidebar-border/70 dark:border-sidebar-border sticky top-16 z-20 -mx-4 border-b px-4 pb-3 backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:rounded-xl lg:border lg:p-4">
-                    <AttemptTimer
-                        startedAt={attempt.started_at}
-                        targetMinutes={attempt.target_minutes}
-                        currentStep={attempt.current_step}
-                        totalSteps={attempt.steps.length}
-                    />
+            <DrillHeader
+                steps={attempt.steps}
+                currentStep={attempt.current_step}
+                startedAt={attempt.started_at}
+                targetMinutes={attempt.target_minutes}
+                showTimer
+            />
+
+            <main className="safe-x mx-auto w-full max-w-3xl space-y-6 px-4 pt-6 pb-32 sm:px-6">
+                <div className="space-y-2">
+                    <h1 className="text-xl font-semibold tracking-tight">
+                        Kerjakan di komputermu sendiri
+                    </h1>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                        Install framework kosong, buka editor polos, lalu
+                        jalankan tujuh langkah dari hafalan. Tekan Langkah
+                        selesai setiap satu langkah beres supaya sistem tahu
+                        kamu tersendat di mana.
+                    </p>
                 </div>
 
-                <div className="grid gap-5 lg:grid-cols-[1fr_22rem] lg:items-start">
-                    <div className="order-2 space-y-5 lg:order-1">
-                        <ProblemPanel problem={problem} />
+                <ProblemPanel problem={problem} />
 
-                        <div id="selesai" className="scroll-mt-32">
-                            <FinishForm attemptId={attempt.id} />
-                        </div>
-                    </div>
-
-                    <div className="order-1 space-y-4 lg:order-2 lg:sticky lg:top-24">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-base">
-                                    Tujuh langkah
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="px-2">
-                                <StepList
-                                    steps={attempt.steps}
-                                    currentStep={attempt.current_step}
-                                />
-                            </CardContent>
-                        </Card>
-
-                        <CurrentStepDock
-                            attemptId={attempt.id}
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-base">
+                            Tujuh langkah
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="px-2">
+                        <StepList
                             steps={attempt.steps}
                             currentStep={attempt.current_step}
                         />
-                    </div>
-                </div>
-            </div>
+                    </CardContent>
+                </Card>
+
+                {isLastStep && <FinishForm attemptId={attempt.id} />}
+            </main>
+
+            <StepDock
+                attemptId={attempt.id}
+                problem={problem}
+                label="Langkah selesai"
+                isLastStep={isLastStep}
+                showSoal={false}
+            />
         </>
     );
 }
-
-AttemptShow.layout = {
-    breadcrumbs: [
-        { title: 'Latihan', href: index() },
-        { title: 'Berjalan', href: index() },
-    ],
-};

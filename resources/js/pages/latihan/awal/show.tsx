@@ -1,23 +1,12 @@
 import { Head, router } from '@inertiajs/react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import WorkspaceController from '@/actions/App/Http/Controllers/Student/WorkspaceController';
-import AttemptTimer from '@/components/latihan/attempt-timer';
-import CodeEditor from '@/components/latihan/code-editor';
-import CurrentStepDock from '@/components/latihan/current-step-dock';
-import DatabasePreview from '@/components/latihan/database-preview';
+import DrillHeader from '@/components/latihan/drill-header';
 import FinishForm from '@/components/latihan/finish-form';
-import FileTabs from '@/components/latihan/file-tabs';
-import GuidePanel from '@/components/latihan/guide-panel';
-import ProblemPanel from '@/components/latihan/problem-panel';
-import CheckResults from '@/components/latihan/check-results';
-import PreviewFrame, {
-    type PreviewHandle,
-} from '@/components/latihan/preview-frame';
-import StepList from '@/components/latihan/step-list';
-import WorkspaceIntro from '@/components/latihan/workspace-intro';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { index } from '@/routes/latihan';
+import type { PreviewHandle } from '@/components/latihan/preview-frame';
+import StepDock from '@/components/latihan/step-dock';
+import StepInstruction from '@/components/latihan/step-instruction';
+import StepWorkbench from '@/components/latihan/step-workbench';
 import type {
     PracticeAttempt,
     PracticeProblem,
@@ -53,28 +42,35 @@ export default function WorkspaceShow({
     totalField,
     guided,
 }: Props) {
-    const [activePath, setActivePath] = useState(files[0]?.path ?? '');
     const [checking, setChecking] = useState(false);
     const previewRef = useRef<PreviewHandle>(null);
 
-    const activeFile = useMemo(
-        () => files.find((file) => file.path === activePath) ?? files[0],
-        [files, activePath],
+    const step = useMemo(
+        () => attempt.steps.find((item) => item.step_no === attempt.current_step),
+        [attempt.steps, attempt.current_step],
     );
 
-    const currentGuide = useMemo(
-        () =>
-            guides.find((guide) => guide.step_no === attempt.current_step) ??
-            null,
+    const guide = useMemo(
+        () => guides.find((item) => item.step_no === attempt.current_step) ?? null,
         [guides, attempt.current_step],
     );
 
-    const saveFile = (content: string) =>
+    const file = useMemo(
+        () => files.find((item) => item.step_key === step?.step_key),
+        [files, step],
+    );
+
+    const saveFile = (content: string) => {
+        if (!file) {
+            return;
+        }
+
         router.post(
             WorkspaceController.saveFile.url(attempt.id),
-            { path: activeFile.path, content },
+            { path: file.path, content },
             { preserveScroll: true, preserveState: true, only: ['preview'] },
         );
+    };
 
     const runMigration = () =>
         router.post(
@@ -114,153 +110,55 @@ export default function WorkspaceShow({
         router.post(
             WorkspaceController.runChecks.url(attempt.id),
             { results },
-            {
-                preserveScroll: true,
-                onFinish: () => setChecking(false),
-            },
+            { preserveScroll: true, onFinish: () => setChecking(false) },
         );
     };
 
+    const isLastStep = attempt.current_step >= attempt.steps.length;
+
     return (
         <>
-            <Head title={problem.title ?? 'Ruang kerja'} />
+            <Head title={`Langkah ${attempt.current_step} — ${problem.title ?? 'Latihan'}`} />
 
-            <div className="safe-x mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-4 pt-4 pb-44 sm:px-6 md:pb-8 lg:px-8">
-                <div className="bg-background/95 border-sidebar-border/70 dark:border-sidebar-border sticky top-16 z-20 -mx-4 border-b px-4 pb-3 backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:rounded-xl lg:border lg:p-4">
-                    <AttemptTimer
-                        startedAt={attempt.started_at}
-                        targetMinutes={attempt.target_minutes}
-                        currentStep={attempt.current_step}
-                        totalSteps={attempt.steps.length}
-                    />
-                </div>
+            <DrillHeader
+                steps={attempt.steps}
+                currentStep={attempt.current_step}
+                startedAt={attempt.started_at}
+                targetMinutes={attempt.target_minutes}
+                showTimer={!guided}
+            />
 
-                {guided && <WorkspaceIntro />}
-
-                <ProblemPanel problem={problem} />
-
-                <GuidePanel
-                    guide={currentGuide}
+            <main className="safe-x mx-auto w-full max-w-5xl space-y-8 px-4 pt-6 pb-32 sm:px-6">
+                <StepInstruction
+                    guide={guide}
                     attemptId={attempt.id}
                     guided={guided}
                 />
 
-                <div className="grid gap-5 xl:grid-cols-[1fr_20rem] xl:items-start">
-                    <div className="space-y-5">
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-base">
-                                    Editor
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                <FileTabs
-                                    files={files}
-                                    active={activeFile?.path ?? ''}
-                                    onSelect={setActivePath}
-                                />
+                <StepWorkbench
+                    stepKey={step?.step_key ?? ''}
+                    file={file}
+                    onSaveFile={saveFile}
+                    onRunMigration={runMigration}
+                    onSubmitRow={submitRow}
+                    onRunChecks={runChecks}
+                    previewRef={previewRef}
+                    preview={preview}
+                    database={database}
+                    checks={checks}
+                    checking={checking}
+                    guided={guided}
+                />
 
-                                {activeFile && (
-                                    <CodeEditor
-                                        key={activeFile.path}
-                                        value={activeFile.content}
-                                        onSave={saveFile}
-                                    />
-                                )}
+                {isLastStep && <FinishForm attemptId={attempt.id} />}
+            </main>
 
-                                <p className="text-muted-foreground text-xs">
-                                    Kode tersimpan otomatis saat kamu klik di
-                                    luar editor.
-                                </p>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-base">
-                                    Pratinjau
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <PreviewFrame
-                                    ref={previewRef}
-                                    html={preview}
-                                    onSubmit={submitRow}
-                                />
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader className="flex-row items-center justify-between gap-3 pb-3">
-                                <CardTitle className="text-base">
-                                    Tabel latihan
-                                </CardTitle>
-                                <Button
-                                    size="sm"
-                                    variant="secondary"
-                                    onClick={runMigration}
-                                >
-                                    Jalankan migration
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <DatabasePreview database={database} />
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader className="flex-row items-center justify-between gap-3 pb-3">
-                                <CardTitle className="text-base">
-                                    Hasil pengecekan
-                                </CardTitle>
-                                <Button
-                                    size="sm"
-                                    onClick={runChecks}
-                                    disabled={checking}
-                                >
-                                    {checking ? 'Mengecek...' : 'Cek pekerjaan'}
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <CheckResults checks={checks} />
-                            </CardContent>
-                        </Card>
-
-                        <div id="selesai" className="scroll-mt-32">
-                            <FinishForm attemptId={attempt.id} />
-                        </div>
-                    </div>
-
-                    <div className="space-y-4 xl:sticky xl:top-24">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-base">
-                                    Tujuh langkah
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="px-2">
-                                <StepList
-                                    steps={attempt.steps}
-                                    currentStep={attempt.current_step}
-                                />
-                            </CardContent>
-                        </Card>
-
-                        <CurrentStepDock
-                            attemptId={attempt.id}
-                            steps={attempt.steps}
-                            currentStep={attempt.current_step}
-                        />
-                    </div>
-                </div>
-            </div>
+            <StepDock
+                attemptId={attempt.id}
+                problem={problem}
+                label="Langkah selesai"
+                isLastStep={isLastStep}
+            />
         </>
     );
 }
-
-WorkspaceShow.layout = {
-    breadcrumbs: [
-        { title: 'Latihan', href: index() },
-        { title: 'Ruang kerja', href: index() },
-    ],
-};

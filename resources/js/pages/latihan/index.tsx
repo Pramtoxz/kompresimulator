@@ -6,7 +6,6 @@ import HistoryTable from '@/components/latihan/history-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
-import { index } from '@/routes/latihan';
 import type { PracticeSummary } from '@/types/latihan';
 
 type Props = {
@@ -111,6 +110,3 @@ export default function PracticeIndex({ student, practice }: Props) {
     );
 }
 
-PracticeIndex.layout = {
-    breadcrumbs: [{ title: 'Latihan', href: index() }],
-};
