@@ -1,4 +1,5 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, router } from '@inertiajs/react';
+import { useEffect } from 'react';
 import ProblemController from '@/actions/App/Http/Controllers/Admin/ProblemController';
 import StudentController from '@/actions/App/Http/Controllers/Admin/StudentController';
 import {
@@ -27,6 +28,23 @@ type Props = {
 };
 
 export default function ProblemIndex({ student, problems, levels }: Props) {
+    const queued = problems.filter(
+        (problem) => problem.status === 'queued',
+    ).length;
+
+    useEffect(() => {
+        if (queued === 0) {
+            return;
+        }
+
+        const timer = window.setInterval(
+            () => router.reload({ only: ['problems'] }),
+            4000,
+        );
+
+        return () => window.clearInterval(timer);
+    }, [queued]);
+
     return (
         <>
             <Head title={`Soal ${student.name}`} />
@@ -74,6 +92,25 @@ export default function ProblemIndex({ student, problems, levels }: Props) {
                         </>
                     )}
                 </Form>
+
+                {queued > 0 && (
+                    <div className="space-y-1 rounded-xl border border-amber-500/40 bg-amber-500/5 p-4">
+                        <p className="text-sm font-medium">
+                            {queued} soal sedang digenerate
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                            Prosesnya berjalan di latar belakang dan memakan 20
+                            sampai 30 detik. Halaman ini menyegarkan diri
+                            sendiri. Kalau statusnya tidak berubah lebih dari
+                            satu menit, berarti pekerja antrean belum jalan —
+                            jalankan{' '}
+                            <span className="font-mono text-xs">
+                                php artisan queue:work
+                            </span>{' '}
+                            di terminal terpisah.
+                        </p>
+                    </div>
+                )}
 
                 <DataTable>
                     <TableHead

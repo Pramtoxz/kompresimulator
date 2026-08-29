@@ -5,6 +5,7 @@ import ProblemGuides from '@/components/admin/problem-guides';
 import ExamSheet from '@/components/soal/exam-sheet';
 import ProblemTestCasesCard from '@/components/admin/problem-test-cases-card';
 import StatusBadge from '@/components/admin/status-badge';
+import ConfirmDialog from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -98,16 +99,14 @@ export default function ProblemShow({ problem }: { problem: ProblemReview }) {
                         Digenerate oleh {problem.provider ?? '—'} ·{' '}
                         {problem.model ?? '—'}
                     </p>
-                    <Form
-                        {...ProblemController.destroy.form(problem.id)}
-                        onBefore={() => confirm('Hapus soal ini?')}
-                    >
-                        {({ processing }) => (
-                            <Button variant="destructive" disabled={processing}>
-                                Hapus soal
-                            </Button>
-                        )}
-                    </Form>
+                    <ConfirmDialog
+                        trigger="Hapus soal"
+                        title="Hapus soal ini?"
+                        description="Panduan, test case, dan riwayat pengecekannya ikut terhapus. Tindakan ini tidak bisa dibatalkan."
+                        confirmLabel="Ya, hapus"
+                        action={ProblemController.destroy.form(problem.id)}
+                        triggerClassName="h-11 sm:h-10"
+                    />
                 </div>
             </div>
         </>

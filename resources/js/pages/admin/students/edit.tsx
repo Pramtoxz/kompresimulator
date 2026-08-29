@@ -1,6 +1,7 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import StudentController from '@/actions/App/Http/Controllers/Admin/StudentController';
 import StudentFormFields from '@/components/admin/student-form-fields';
+import ConfirmDialog from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -71,26 +72,13 @@ export default function StudentEdit({ student, frameworks }: Props) {
                         </p>
                     </div>
 
-                    <Form
-                        {...StudentController.destroy.form(student.id)}
-                        options={{ preserveScroll: true }}
-                        onBefore={() =>
-                            confirm(
-                                `Hapus ${student.name} beserta seluruh soal dan riwayat latihannya?`,
-                            )
-                        }
-                    >
-                        {({ processing }) => (
-                            <Button
-                                variant="destructive"
-                                disabled={processing}
-                                className="h-11 w-full sm:h-10 sm:w-auto"
-                                data-test="delete-student-button"
-                            >
-                                Hapus mahasiswa
-                            </Button>
-                        )}
-                    </Form>
+                    <ConfirmDialog
+                        trigger="Hapus mahasiswa"
+                        title={`Hapus ${student.name}?`}
+                        description="Seluruh soal dan riwayat latihannya ikut terhapus. Tindakan ini tidak bisa dibatalkan."
+                        confirmLabel="Ya, hapus"
+                        action={StudentController.destroy.form(student.id)}
+                    />
                 </div>
             </div>
         </>
