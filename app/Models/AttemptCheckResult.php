@@ -10,11 +10,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['attempt_id', 'test_case_id', 'kind', 'passed', 'actual', 'message'])]
 class AttemptCheckResult extends Model
 {
+    /**
+     * @return BelongsTo<Attempt, $this>
+     */
     public function attempt(): BelongsTo
     {
         return $this->belongsTo(Attempt::class);
     }
 
+    /**
+     * @return BelongsTo<ProblemTestCase, $this>
+     */
     public function testCase(): BelongsTo
     {
         return $this->belongsTo(ProblemTestCase::class, 'test_case_id');

@@ -14,6 +14,9 @@ class AiRequest extends Model
 {
     protected $table = 'ai.ai_requests';
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

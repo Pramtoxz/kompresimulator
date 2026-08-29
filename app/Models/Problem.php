@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property ProblemStatus $status
+ */
 #[Fillable([
     'user_id', 'level', 'framework', 'status', 'thesis_title_snapshot', 'title', 'brief',
     'requirements', 'schema_spec', 'calc_rules', 'provider', 'model', 'prompt_version',
@@ -17,21 +20,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Problem extends Model
 {
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany<ProblemTestCase, $this>
+     */
     public function testCases(): HasMany
     {
         return $this->hasMany(ProblemTestCase::class)->orderBy('position');
     }
 
+    /**
+     * @return HasMany<ProblemGuide, $this>
+     */
     public function guides(): HasMany
     {
         return $this->hasMany(ProblemGuide::class)->orderBy('step_no');
     }
 
+    /**
+     * @return HasMany<Attempt, $this>
+     */
     public function attempts(): HasMany
     {
         return $this->hasMany(Attempt::class);

@@ -16,31 +16,49 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class Attempt extends Model
 {
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<Problem, $this>
+     */
     public function problem(): BelongsTo
     {
         return $this->belongsTo(Problem::class);
     }
 
+    /**
+     * @return HasMany<AttemptStep, $this>
+     */
     public function steps(): HasMany
     {
         return $this->hasMany(AttemptStep::class)->orderBy('step_no');
     }
 
+    /**
+     * @return HasMany<AttemptFile, $this>
+     */
     public function files(): HasMany
     {
         return $this->hasMany(AttemptFile::class);
     }
 
+    /**
+     * @return HasMany<AttemptCheckResult, $this>
+     */
     public function checkResults(): HasMany
     {
         return $this->hasMany(AttemptCheckResult::class);
     }
 
+    /**
+     * @return HasMany<AttemptFeedback, $this>
+     */
     public function feedbacks(): HasMany
     {
         return $this->hasMany(AttemptFeedback::class);

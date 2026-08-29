@@ -36,11 +36,17 @@ class User extends Authenticatable
 
     protected $table = 'auth.users';
 
+    /**
+     * @return HasMany<Problem, $this>
+     */
     public function problems(): HasMany
     {
         return $this->hasMany(Problem::class);
     }
 
+    /**
+     * @return HasMany<Attempt, $this>
+     */
     public function attempts(): HasMany
     {
         return $this->hasMany(Attempt::class);

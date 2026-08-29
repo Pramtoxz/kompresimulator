@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class AttemptStep extends Model
 {
+    /**
+     * @return BelongsTo<Attempt, $this>
+     */
     public function attempt(): BelongsTo
     {
         return $this->belongsTo(Attempt::class);

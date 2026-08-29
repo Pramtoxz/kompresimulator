@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['problem_id', 'label', 'input', 'expected', 'is_hidden', 'position'])]
 class ProblemTestCase extends Model
 {
+    /**
+     * @return BelongsTo<Problem, $this>
+     */
     public function problem(): BelongsTo
     {
         return $this->belongsTo(Problem::class);

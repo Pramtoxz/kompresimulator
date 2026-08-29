@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['problem_id', 'step_key', 'step_no', 'instruction', 'example_code', 'tips'])]
 class ProblemGuide extends Model
 {
+    /**
+     * @return BelongsTo<Problem, $this>
+     */
     public function problem(): BelongsTo
     {
         return $this->belongsTo(Problem::class);

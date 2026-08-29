@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    /** @var string[] */
     protected array $schemas = ['auth', 'ai', 'system', 'latihan'];
 
     public function up(): void
