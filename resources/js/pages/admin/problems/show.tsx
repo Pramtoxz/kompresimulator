@@ -2,8 +2,7 @@ import { Form, Head, Link } from '@inertiajs/react';
 import ProblemController from '@/actions/App/Http/Controllers/Admin/ProblemController';
 import StudentController from '@/actions/App/Http/Controllers/Admin/StudentController';
 import ProblemGuides from '@/components/admin/problem-guides';
-import ProblemRulesCard from '@/components/admin/problem-rules-card';
-import ProblemSchemaCard from '@/components/admin/problem-schema-card';
+import ExamSheet from '@/components/soal/exam-sheet';
 import ProblemTestCasesCard from '@/components/admin/problem-test-cases-card';
 import StatusBadge from '@/components/admin/status-badge';
 import Heading from '@/components/heading';
@@ -49,32 +48,46 @@ export default function ProblemShow({ problem }: { problem: ProblemReview }) {
                     </Card>
                 )}
 
-                {problem.brief && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Narasi soal</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-sm">{problem.brief}</p>
-                            <ul className="list-inside list-disc space-y-1 text-sm">
-                                {problem.requirements.map((requirement) => (
-                                    <li key={requirement}>{requirement}</li>
-                                ))}
-                            </ul>
-                        </CardContent>
-                    </Card>
-                )}
+                <ExamSheet
+                    title={problem.title}
+                    brief={problem.brief}
+                    requirements={problem.requirements}
+                    formFields={problem.form_fields}
+                    lookup={problem.lookup}
+                    rules={problem.rules}
+                    table={problem.schema_spec.table ?? null}
+                    showExpression
+                />
 
-                <div className="grid gap-4 lg:grid-cols-2">
-                    <ProblemSchemaCard
-                        table={problem.schema_spec.table}
-                        columns={problem.schema_spec.columns}
-                    />
-                    <ProblemRulesCard
-                        rules={problem.rules}
-                        rates={problem.rates}
-                    />
-                </div>
+                <Card>
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-base">
+                            Kolom tabel
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ul className="divide-border divide-y text-sm">
+                            {(problem.schema_spec.columns ?? []).map(
+                                (column) => (
+                                    <li
+                                        key={column.name}
+                                        className="flex justify-between gap-4 py-2"
+                                    >
+                                        <span className="font-mono">
+                                            {column.name}
+                                        </span>
+                                        <span className="text-muted-foreground">
+                                            {column.type}
+                                            {column.nullable
+                                                ? ' · nullable'
+                                                : ''}
+                                        </span>
+                                    </li>
+                                ),
+                            )}
+                        </ul>
+                    </CardContent>
+                </Card>
 
                 <ProblemTestCasesCard testCases={problem.test_cases} />
 

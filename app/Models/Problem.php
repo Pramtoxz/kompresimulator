@@ -18,10 +18,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property array<int, string>|null $requirements
  * @property array<string, mixed>|null $schema_spec
  * @property array<string, mixed>|null $calc_rules
+ * @property array<int, array<string, mixed>>|null $form_fields
+ * @property array<string, mixed>|null $lookup
  */
 #[Fillable([
     'user_id', 'level', 'framework', 'status', 'thesis_title_snapshot', 'title', 'brief',
-    'requirements', 'schema_spec', 'calc_rules', 'provider', 'model', 'prompt_version',
+    'requirements', 'schema_spec', 'calc_rules', 'form_fields', 'lookup', 'provider', 'model', 'prompt_version',
     'raw_response', 'failure_reason',
 ])]
 class Problem extends Model
@@ -72,6 +74,8 @@ class Problem extends Model
             'requirements' => 'array',
             'schema_spec' => 'array',
             'calc_rules' => 'array',
+            'form_fields' => 'array',
+            'lookup' => 'array',
             'raw_response' => 'array',
         ];
     }

@@ -7,7 +7,7 @@ use App\Enums\StepKey;
 
 class ProblemInstructions
 {
-    public const VERSION = 'v1';
+    public const VERSION = 'v2';
 
     public static function for(Framework $framework): string
     {
@@ -16,15 +16,27 @@ class ProblemInstructions
             ->implode("\n");
 
         return implode("\n\n", [
-            'Kamu penyusun soal ujian komprehensif untuk mahasiswa sistem informasi di Indonesia.',
-            'Mahasiswa mengerjakan di tempat dalam waktu maksimal 30 menit, memakai framework kosong yang mereka install sendiri, editor teks polos tanpa autocomplete, dan tanpa akses internet. Kemampuan pemrograman mereka sangat terbatas.',
-            'Karena itu soal harus kecil dan lugas: satu tabel, satu form input, satu kalkulasi otomatis, dan satu halaman laporan sederhana. Dilarang meminta autentikasi, relasi antar tabel, upload berkas, atau grafik.',
+            'Kamu penyusun soal ujian komprehensif di kampus Indonesia. Soal ditulis meniru kertas soal dosen yang formatnya selalu sama.',
+            self::examFormat(),
+            'Mahasiswa mengerjakan di tempat dalam waktu maksimal 30 menit memakai framework kosong, editor teks polos, dan tanpa internet. Kemampuan pemrograman mereka sangat terbatas, jadi soal harus kecil: satu tabel, satu form, satu kalkulasi otomatis, satu halaman laporan. Dilarang meminta login, relasi antar tabel, unggah berkas, atau grafik.',
             'Framework yang dipakai: '.$framework->label().'.',
             self::frameworkNotes($framework),
             "Panduan wajib berisi tepat tujuh langkah dengan step_key berikut, berurutan:\n".$steps,
-            'Aturan kalkulasi harus berupa ekspresi JavaScript satu baris yang bisa dievaluasi mesin. Tarif yang berbeda per pilihan ditulis di rate_table sebagai angka, bukan di dalam ekspresi.',
-            'Buat tiga test case dengan angka yang benar-benar dihitung menurut aturan kalkulasi dan tarif yang kamu tetapkan sendiri. Salah satu test case harus memicu diskon atau aturan bersyarat.',
-            'Seluruh teks yang dibaca mahasiswa ditulis dalam bahasa Indonesia. Nama tabel dan nama kolom ditulis dalam bahasa Inggris.',
+            'Panduan ditulis untuk orang yang baru pertama kali menyentuh framework. Sebutkan nama berkas dan letaknya, lalu kode utuh yang bisa langsung diketik ulang. Hindari istilah yang tidak dijelaskan.',
+            'Seluruh label, nama field, nama kolom, dan nama tabel ditulis dalam bahasa Indonesia. Nama field memakai huruf kecil dengan garis bawah, misalnya nama_pelanggan, kode_paket, harga_paket, jumlah_peserta, sisa_bayar, potongan, total. Dilarang memakai bahasa Inggris seperti customer_name atau total_price.',
+        ]);
+    }
+
+    private static function examFormat(): string
+    {
+        return implode("\n", [
+            'Bentuk soal yang wajib diikuti:',
+            '1. Satu form input dengan enam sampai delapan field berlabel bahasa Indonesia.',
+            '2. Satu field bertipe select yang menjadi kunci, misalnya Kode Paket atau Nama Paket. Memilih nilai di field ini mengisi otomatis field turunannya seperti harga.',
+            '3. Beberapa field readonly yang terisi otomatis dari hasil hitungan, misalnya Potongan, Total, atau Sisa Bayar.',
+            '4. Dua tombol tetap: Simpan dan Laporan.',
+            '5. Satu tabel acuan berisi minimal tiga baris, misalnya K-01 Eks. Bukittinggi 30000000, K-02 Eks. Solok 20000000, K-03 Eks. Alahan Panjang 10000000.',
+            '6. Aturan hitung bersyarat yang ditulis polos, misalnya: jika lama lebih dari 3 maka potongan 10 persen dari harga, selain itu 0. Total sama dengan harga dikali lama dikurangi potongan.',
         ]);
     }
 
@@ -55,7 +67,8 @@ class ProblemInstructions
         return implode("\n", [
             'Judul skripsi mahasiswa: "'.$thesisTitle.'".',
             'Framework: '.$framework->label().'.',
-            'Susun satu soal ujian yang konsepnya mengikuti judul skripsi tersebut dan bisa diselesaikan dalam 30 menit.',
+            'Susun satu soal ujian mengikuti format kertas soal dosen, dengan tabel acuan dan aturan hitung yang konsepnya mengikuti judul skripsi tersebut.',
+            'Angka pada tabel acuan dan test case harus konsisten satu sama lain.',
         ]);
     }
 }

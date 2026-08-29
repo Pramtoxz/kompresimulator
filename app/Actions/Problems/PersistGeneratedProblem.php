@@ -23,10 +23,9 @@ class PersistGeneratedProblem
                 'brief' => $generated['brief'],
                 'requirements' => $generated['requirements'],
                 'schema_spec' => $generated['schema_spec'],
-                'calc_rules' => [
-                    'rules' => $this->normalizeRules($generated['calc_rules']),
-                    'rates' => $generated['rate_table'],
-                ],
+                'calc_rules' => ['rules' => $this->normalizeRules($generated['calc_rules'])],
+                'form_fields' => $generated['form_fields'],
+                'lookup' => $generated['lookup'],
                 'provider' => $provider,
                 'model' => $model,
                 'raw_response' => $generated,

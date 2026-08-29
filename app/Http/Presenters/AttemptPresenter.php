@@ -43,7 +43,8 @@ class AttemptPresenter
             'table' => $problem->schema_spec['table'] ?? null,
             'columns' => $problem->schema_spec['columns'] ?? [],
             'rules' => $problem->calc_rules['rules'] ?? [],
-            'rates' => $problem->calc_rules['rates'] ?? [],
+            'form_fields' => $problem->form_fields ?? [],
+            'lookup' => $problem->lookup ?? ['key_field' => null, 'columns' => [], 'rows' => []],
         ];
     }
 }

@@ -29,10 +29,16 @@ export type PracticeRule = {
     expression: string;
 };
 
-export type PracticeRate = {
-    key: string;
-    option: string;
-    amount: number;
+export type FormField = {
+    label: string;
+    name: string;
+    input: 'text' | 'number' | 'date' | 'select' | 'readonly';
+};
+
+export type LookupTable = {
+    key_field: string | null;
+    columns: string[];
+    rows: string[][];
 };
 
 export type PracticeProblem = {
@@ -42,7 +48,8 @@ export type PracticeProblem = {
     table: string | null;
     columns: PracticeColumn[];
     rules: PracticeRule[];
-    rates: PracticeRate[];
+    form_fields: FormField[];
+    lookup: LookupTable;
 };
 
 export type PracticeHistoryRow = {

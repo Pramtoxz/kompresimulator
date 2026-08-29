@@ -55,10 +55,16 @@ export type CalcRule = {
     expression: string;
 };
 
-export type RateRow = {
-    key: string;
-    option: string;
-    amount: number;
+export type FormField = {
+    label: string;
+    name: string;
+    input: 'text' | 'number' | 'date' | 'select' | 'readonly';
+};
+
+export type LookupTable = {
+    key_field: string | null;
+    columns: string[];
+    rows: string[][];
 };
 
 export type TestCaseInput = {
@@ -94,7 +100,8 @@ export type ProblemReview = {
     requirements: string[];
     schema_spec: { table?: string; columns?: ProblemColumn[] };
     rules: CalcRule[];
-    rates: RateRow[];
+    form_fields: FormField[];
+    lookup: LookupTable;
     failure_reason: string | null;
     provider: string | null;
     model: string | null;

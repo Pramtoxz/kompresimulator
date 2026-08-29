@@ -8,11 +8,13 @@ import DatabasePreview from '@/components/latihan/database-preview';
 import FinishForm from '@/components/latihan/finish-form';
 import FileTabs from '@/components/latihan/file-tabs';
 import GuidePanel from '@/components/latihan/guide-panel';
+import ProblemPanel from '@/components/latihan/problem-panel';
 import CheckResults from '@/components/latihan/check-results';
 import PreviewFrame, {
     type PreviewHandle,
 } from '@/components/latihan/preview-frame';
 import StepList from '@/components/latihan/step-list';
+import WorkspaceIntro from '@/components/latihan/workspace-intro';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { index } from '@/routes/latihan';
@@ -132,6 +134,10 @@ export default function WorkspaceShow({
                         totalSteps={attempt.steps.length}
                     />
                 </div>
+
+                {guided && <WorkspaceIntro />}
+
+                <ProblemPanel problem={problem} />
 
                 <GuidePanel
                     guide={currentGuide}
