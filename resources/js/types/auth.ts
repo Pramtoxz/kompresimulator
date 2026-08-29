@@ -4,7 +4,10 @@ export type User = {
     email: string;
     avatar?: string;
     email_verified_at: string | null;
-    two_factor_enabled?: boolean;
+    role: 'admin' | 'student';
+    thesis_title: string | null;
+    framework: string | null;
+    target_minutes: number;
     created_at: string;
     updated_at: string;
     [key: string]: unknown;

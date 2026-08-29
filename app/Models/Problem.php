@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Framework $framework
  * @property Level $level
  * @property string $thesis_title_snapshot
+ * @property array<int, string>|null $requirements
+ * @property array<string, mixed>|null $schema_spec
+ * @property array<string, mixed>|null $calc_rules
  */
 #[Fillable([
     'user_id', 'level', 'framework', 'status', 'thesis_title_snapshot', 'title', 'brief',

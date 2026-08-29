@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property StepKey $step_key
+ */
 #[Fillable(['problem_id', 'step_key', 'step_no', 'instruction', 'example_code', 'tips'])]
 class ProblemGuide extends Model
 {

@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property array<int, array<string, string>> $input
+ * @property array<string, mixed> $expected
+ */
 #[Fillable(['problem_id', 'label', 'input', 'expected', 'is_hidden', 'position'])]
 class ProblemTestCase extends Model
 {
