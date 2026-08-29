@@ -30,41 +30,58 @@ export default function PracticeIndex({ student, practice }: Props) {
                     description={`${student.thesis_title ?? '—'} · ${student.framework_label ?? '—'} · target ${student.target_minutes} menit`}
                 />
 
+                {practice.running && (
+                    <Card className="border-primary/40">
+                        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <p className="font-medium">
+                                    Ada latihan yang belum selesai
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                    {practice.running.level_label}
+                                </p>
+                            </div>
+                            <Button asChild className="h-11 sm:h-10">
+                                <Link
+                                    href={AttemptController.show(
+                                        practice.running.id,
+                                    )}
+                                >
+                                    Lanjutkan
+                                </Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                )}
+
                 <div className="grid gap-4 md:grid-cols-3">
-                    <Card className="md:col-span-1">
-                        <CardHeader>
-                            <CardTitle>Level Akhir</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-muted-foreground text-sm">
-                                Kondisi ujian sesungguhnya. Kerjakan di PC
-                                sendiri dengan framework kosong dan editor
-                                polos. Sistem hanya menampilkan soal dan
-                                menghitung waktu.
-                            </p>
+                    {practice.levels.map((level) => (
+                        <Card key={level.value} className="flex flex-col">
+                            <CardHeader className="pb-3">
+                                <CardTitle>{level.label}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex flex-1 flex-col justify-between gap-4">
+                                <p className="text-muted-foreground text-sm">
+                                    {level.description}
+                                </p>
 
-                            {practice.running !== null && (
-                                <Button asChild className="h-12 w-full">
-                                    <Link
-                                        href={AttemptController.show(
-                                            practice.running,
-                                        )}
-                                    >
-                                        Lanjutkan latihan
-                                    </Link>
-                                </Button>
-                            )}
-
-                            {practice.running === null &&
-                                practice.available !== null && (
+                                {level.problem_id === null ? (
+                                    <p className="text-muted-foreground text-sm">
+                                        Belum ada soal. Minta admin
+                                        menggeneratenya.
+                                    </p>
+                                ) : (
                                     <Form
                                         {...AttemptController.store.form(
-                                            practice.available,
+                                            level.problem_id,
                                         )}
                                     >
                                         {({ processing }) => (
                                             <Button
-                                                disabled={processing}
+                                                disabled={
+                                                    processing ||
+                                                    practice.running !== null
+                                                }
                                                 className="h-12 w-full"
                                             >
                                                 {processing && <Spinner />}
@@ -73,40 +90,14 @@ export default function PracticeIndex({ student, practice }: Props) {
                                         )}
                                     </Form>
                                 )}
-
-                            {practice.running === null &&
-                                practice.available === null && (
-                                    <p className="text-muted-foreground text-sm">
-                                        Belum ada soal. Hubungi admin untuk
-                                        menggenerate soal level akhir.
-                                    </p>
-                                )}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="opacity-60">
-                        <CardHeader>
-                            <CardTitle>Level Awal</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-muted-foreground text-sm">
-                            Tutorial terbimbing dengan editor dan panduan tiap
-                            langkah. Belum tersedia.
-                        </CardContent>
-                    </Card>
-
-                    <Card className="opacity-60">
-                        <CardHeader>
-                            <CardTitle>Level Menengah</CardTitle>
-                        </CardHeader>
-                        <CardContent className="text-muted-foreground text-sm">
-                            Latihan mandiri dengan pengecekan otomatis. Belum
-                            tersedia.
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
 
                 <div className="space-y-3">
                     <h2 className="text-lg font-medium">Riwayat latihan</h2>
+
                     <div className="md:hidden">
                         <HistoryCardList rows={practice.history} />
                     </div>

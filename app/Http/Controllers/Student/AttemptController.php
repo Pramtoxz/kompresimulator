@@ -6,6 +6,7 @@ use App\Actions\Attempts\AdvanceAttemptStep;
 use App\Actions\Attempts\FinishAttempt;
 use App\Actions\Attempts\StartAttempt;
 use App\Enums\AttemptStatus;
+use App\Enums\Level;
 use App\Http\Controllers\Controller;
 use App\Http\Presenters\AttemptPresenter;
 use App\Http\Requests\Student\FinishAttemptRequest;
@@ -28,12 +29,14 @@ class AttemptController extends Controller
         return to_route('latihan.attempt.show', $attempt);
     }
 
-    public function show(Request $request, Attempt $attempt): Response
+    public function show(Request $request, Attempt $attempt): Response|RedirectResponse
     {
-        $this->authorizeAttempt($request, $attempt);
-
         if ($attempt->status === AttemptStatus::Finished) {
-            return $this->result($request, $attempt);
+            return $this->result($attempt);
+        }
+
+        if ($attempt->level !== Level::Akhir) {
+            return to_route('latihan.attempt.workspace', $attempt);
         }
 
         $attempt->load('steps', 'problem');
@@ -44,9 +47,8 @@ class AttemptController extends Controller
         ]);
     }
 
-    public function advance(Request $request, Attempt $attempt, AdvanceAttemptStep $advancer): RedirectResponse
+    public function advance(Attempt $attempt, AdvanceAttemptStep $advancer): RedirectResponse
     {
-        $this->authorizeAttempt($request, $attempt);
         abort_unless($attempt->status === AttemptStatus::Running, 409);
 
         $advancer->handle($attempt);
@@ -56,7 +58,6 @@ class AttemptController extends Controller
 
     public function finish(FinishAttemptRequest $request, Attempt $attempt, FinishAttempt $finisher): RedirectResponse
     {
-        $this->authorizeAttempt($request, $attempt);
         abort_unless($attempt->status === AttemptStatus::Running, 409);
 
         $finisher->handle($attempt, $request->manualMinutes());
@@ -64,7 +65,7 @@ class AttemptController extends Controller
         return to_route('latihan.attempt.show', $attempt);
     }
 
-    private function result(Request $request, Attempt $attempt): Response
+    private function result(Attempt $attempt): Response
     {
         $attempt->load('steps', 'problem', 'feedbacks');
 
@@ -74,10 +75,5 @@ class AttemptController extends Controller
             'within_target' => $attempt->isWithinTarget(),
             'feedback' => $attempt->feedbacks->first()?->body,
         ]);
-    }
-
-    private function authorizeAttempt(Request $request, Attempt $attempt): void
-    {
-        abort_unless($attempt->user_id === $request->user()->id, 403);
     }
 }

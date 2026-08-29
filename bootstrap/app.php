@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureAttemptBelongsToUser;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
+            'attempt.owner' => EnsureAttemptBelongsToUser::class,
         ]);
 
         $middleware->web(append: [

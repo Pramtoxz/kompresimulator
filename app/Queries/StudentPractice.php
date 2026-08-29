@@ -2,6 +2,7 @@
 
 namespace App\Queries;
 
+use App\Enums\AttemptStatus;
 use App\Enums\Level;
 use App\Enums\ProblemStatus;
 use App\Models\Attempt;
@@ -16,29 +17,60 @@ class StudentPractice
     public function handle(User $student): array
     {
         return [
-            'available' => $this->availableProblem($student),
+            'levels' => $this->levels($student),
             'running' => $this->runningAttempt($student),
             'history' => $this->history($student),
         ];
     }
 
-    private function availableProblem(User $student): ?int
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function levels(User $student): array
     {
-        return Problem::query()
+        $ready = Problem::query()
             ->where('user_id', $student->id)
-            ->where('level', Level::Akhir)
             ->where('status', ProblemStatus::Ready)
-            ->inRandomOrder()
-            ->value('id');
+            ->get()
+            ->groupBy(fn (Problem $problem) => $problem->level->value);
+
+        return array_map(fn (Level $level) => [
+            'value' => $level->value,
+            'label' => $level->label(),
+            'description' => $this->description($level),
+            'problem_id' => $ready->get($level->value)?->random()->id,
+        ], Level::cases());
     }
 
-    private function runningAttempt(User $student): ?int
+    private function description(Level $level): string
     {
-        return Attempt::query()
+        return match ($level) {
+            Level::Awal => 'Dituntun penuh. Editor dan panduan tiap langkah ada di layar, lengkap dengan contoh kode.',
+            Level::Menengah => 'Bantuan dikurangi. Panduan tanpa contoh kode, dan hasilnya dicek otomatis.',
+            Level::Akhir => 'Kondisi ujian sesungguhnya. Kerjakan di komputer sendiri, sistem hanya menghitung waktu.',
+        };
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function runningAttempt(User $student): ?array
+    {
+        $attempt = Attempt::query()
             ->where('user_id', $student->id)
-            ->where('status', 'running')
+            ->where('status', AttemptStatus::Running)
             ->latest('id')
-            ->value('id');
+            ->first();
+
+        if ($attempt === null) {
+            return null;
+        }
+
+        return [
+            'id' => $attempt->id,
+            'level' => $attempt->level->value,
+            'level_label' => $attempt->level->label(),
+        ];
     }
 
     /**
@@ -49,7 +81,7 @@ class StudentPractice
         return Attempt::query()
             ->with('problem')
             ->where('user_id', $student->id)
-            ->where('status', 'finished')
+            ->where('status', AttemptStatus::Finished)
             ->latest('finished_at')
             ->limit(20)
             ->get()

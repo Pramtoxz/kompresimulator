@@ -3,6 +3,7 @@
 namespace App\Actions\Attempts;
 
 use App\Enums\AttemptStatus;
+use App\Enums\Level;
 use App\Enums\StepKey;
 use App\Enums\StepStatus;
 use App\Models\Attempt;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class StartAttempt
 {
+    public function __construct(private PrepareWorkspace $workspace) {}
+
     public function handle(User $student, Problem $problem): Attempt
     {
         return DB::transaction(function () use ($student, $problem) {
@@ -32,6 +35,11 @@ class StartAttempt
                     'status' => $step->number() === 1 ? StepStatus::InProgress : StepStatus::Pending,
                     'started_at' => $step->number() === 1 ? now() : null,
                 ]);
+            }
+
+            if ($problem->level !== Level::Akhir) {
+                $attempt->setRelation('problem', $problem);
+                $this->workspace->handle($attempt);
             }
 
             return $attempt;

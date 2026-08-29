@@ -56,7 +56,42 @@ export type PracticeHistoryRow = {
 };
 
 export type PracticeSummary = {
-    available: number | null;
-    running: number | null;
+    levels: PracticeLevel[];
+    running: PracticeRunning | null;
     history: PracticeHistoryRow[];
+};
+
+export type WorkspaceFile = {
+    path: string;
+    step_key: string | null;
+    language: string;
+    content: string;
+};
+
+export type WorkspaceGuide = {
+    step_no: number;
+    step_key: string;
+    label: string;
+    instruction: string;
+    example_code: string | null;
+    tips: string | null;
+};
+
+export type WorkspaceDatabase = {
+    table: string | null;
+    columns: string[];
+    rows: Record<string, unknown>[];
+};
+
+export type PracticeLevel = {
+    value: string;
+    label: string;
+    description: string;
+    problem_id: number | null;
+};
+
+export type PracticeRunning = {
+    id: number;
+    level: string;
+    level_label: string;
 };
