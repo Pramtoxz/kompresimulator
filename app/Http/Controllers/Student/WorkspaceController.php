@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Actions\Practice\RevealHint;
+use App\Actions\Practice\RunAttemptChecks;
 use App\Actions\Practice\RunWorkspaceMigration;
 use App\Actions\Practice\SaveWorkspaceFile;
 use App\Actions\Practice\StorePracticeRow;
@@ -9,8 +11,11 @@ use App\Enums\Level;
 use App\Http\Controllers\Controller;
 use App\Http\Presenters\AttemptPresenter;
 use App\Http\Presenters\WorkspacePresenter;
+use App\Http\Requests\Student\RevealHintRequest;
+use App\Http\Requests\Student\RunChecksRequest;
 use App\Http\Requests\Student\SaveWorkspaceFileRequest;
 use App\Models\Attempt;
+use App\Models\AttemptCheckResult;
 use App\Practice\MigrationParseException;
 use App\Practice\PracticeSchema;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +29,7 @@ class WorkspaceController extends Controller
 
     public function show(Attempt $attempt): Response
     {
-        $attempt->load('steps', 'files', 'problem.guides');
+        $attempt->load('steps', 'files', 'hints', 'checkResults', 'problem.guides', 'problem.testCases');
 
         return Inertia::render('latihan/awal/show', [
             'attempt' => AttemptPresenter::forWorkspace($attempt),
@@ -32,7 +37,12 @@ class WorkspaceController extends Controller
             'guides' => WorkspacePresenter::guides(
                 $attempt->problem,
                 $attempt->level === Level::Awal,
+                $attempt->hints->pluck('step_key')->map(fn ($step) => $step->value)->all(),
             ),
+            'testCases' => WorkspacePresenter::testCases($attempt->problem),
+            'totalField' => WorkspacePresenter::totalField($attempt->problem),
+            'checks' => $this->checks($attempt),
+            'guided' => $attempt->level === Level::Awal,
             'files' => WorkspacePresenter::files($attempt),
             'preview' => WorkspacePresenter::preview($attempt),
             'database' => $this->database($attempt),
@@ -73,6 +83,42 @@ class WorkspaceController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Data tersimpan ke tabel latihan.']);
 
         return back();
+    }
+
+    public function revealHint(RevealHintRequest $request, Attempt $attempt, RevealHint $reveal): RedirectResponse
+    {
+        $reveal->handle($attempt, $request->step());
+
+        return back();
+    }
+
+    public function runChecks(RunChecksRequest $request, Attempt $attempt, RunAttemptChecks $runner): RedirectResponse
+    {
+        $attempt->load('files', 'problem.testCases');
+
+        $outcomes = $runner->handle($attempt, $request->calculationResults());
+        $passed = count(array_filter($outcomes, fn ($outcome) => $outcome->passed));
+
+        Inertia::flash('toast', [
+            'type' => $passed === count($outcomes) ? 'success' : 'error',
+            'message' => "Pengecekan selesai: {$passed} dari ".count($outcomes).' lolos.',
+        ]);
+
+        return back();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function checks(Attempt $attempt): array
+    {
+        return $attempt->checkResults
+            ->map(fn (AttemptCheckResult $result) => [
+                'kind' => $result->kind->value,
+                'passed' => $result->passed,
+                'message' => $result->message,
+            ])
+            ->all();
     }
 
     /**

@@ -1,5 +1,5 @@
 import { Head, router } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import WorkspaceController from '@/actions/App/Http/Controllers/Student/WorkspaceController';
 import AttemptTimer from '@/components/latihan/attempt-timer';
 import CodeEditor from '@/components/latihan/code-editor';
@@ -8,7 +8,10 @@ import DatabasePreview from '@/components/latihan/database-preview';
 import FinishForm from '@/components/latihan/finish-form';
 import FileTabs from '@/components/latihan/file-tabs';
 import GuidePanel from '@/components/latihan/guide-panel';
-import PreviewFrame from '@/components/latihan/preview-frame';
+import CheckResults from '@/components/latihan/check-results';
+import PreviewFrame, {
+    type PreviewHandle,
+} from '@/components/latihan/preview-frame';
 import StepList from '@/components/latihan/step-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,9 +19,11 @@ import { index } from '@/routes/latihan';
 import type {
     PracticeAttempt,
     PracticeProblem,
+    WorkspaceCheck,
     WorkspaceDatabase,
     WorkspaceFile,
     WorkspaceGuide,
+    WorkspaceTestCase,
 } from '@/types/latihan';
 
 type Props = {
@@ -28,6 +33,10 @@ type Props = {
     files: WorkspaceFile[];
     preview: string;
     database: WorkspaceDatabase;
+    checks: WorkspaceCheck[];
+    testCases: WorkspaceTestCase[];
+    totalField: string | null;
+    guided: boolean;
 };
 
 export default function WorkspaceShow({
@@ -37,8 +46,14 @@ export default function WorkspaceShow({
     files,
     preview,
     database,
+    checks,
+    testCases,
+    totalField,
+    guided,
 }: Props) {
     const [activePath, setActivePath] = useState(files[0]?.path ?? '');
+    const [checking, setChecking] = useState(false);
+    const previewRef = useRef<PreviewHandle>(null);
 
     const activeFile = useMemo(
         () => files.find((file) => file.path === activePath) ?? files[0],
@@ -66,10 +81,43 @@ export default function WorkspaceShow({
             { preserveScroll: true },
         );
 
-    const submitRow = (data: Record<string, string>) =>
-        router.post(WorkspaceController.storeRow.url(attempt.id), data, {
-            preserveScroll: true,
-        });
+    const submitRow = useCallback(
+        (data: Record<string, string>) =>
+            router.post(WorkspaceController.storeRow.url(attempt.id), data, {
+                preserveScroll: true,
+            }),
+        [attempt.id],
+    );
+
+    const runChecks = async () => {
+        setChecking(true);
+
+        const results = [];
+
+        for (const testCase of testCases) {
+            const total = totalField
+                ? await previewRef.current?.runCase(
+                      testCase.id,
+                      testCase.inputs,
+                      totalField,
+                  )
+                : null;
+
+            results.push({
+                test_case_id: testCase.id,
+                actual_total: total ?? null,
+            });
+        }
+
+        router.post(
+            WorkspaceController.runChecks.url(attempt.id),
+            { results },
+            {
+                preserveScroll: true,
+                onFinish: () => setChecking(false),
+            },
+        );
+    };
 
     return (
         <>
@@ -85,7 +133,11 @@ export default function WorkspaceShow({
                     />
                 </div>
 
-                <GuidePanel guide={currentGuide} />
+                <GuidePanel
+                    guide={currentGuide}
+                    attemptId={attempt.id}
+                    guided={guided}
+                />
 
                 <div className="grid gap-5 xl:grid-cols-[1fr_20rem] xl:items-start">
                     <div className="space-y-5">
@@ -125,6 +177,7 @@ export default function WorkspaceShow({
                             </CardHeader>
                             <CardContent>
                                 <PreviewFrame
+                                    ref={previewRef}
                                     html={preview}
                                     onSubmit={submitRow}
                                 />
@@ -146,6 +199,24 @@ export default function WorkspaceShow({
                             </CardHeader>
                             <CardContent>
                                 <DatabasePreview database={database} />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="flex-row items-center justify-between gap-3 pb-3">
+                                <CardTitle className="text-base">
+                                    Hasil pengecekan
+                                </CardTitle>
+                                <Button
+                                    size="sm"
+                                    onClick={runChecks}
+                                    disabled={checking}
+                                >
+                                    {checking ? 'Mengecek...' : 'Cek pekerjaan'}
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <CheckResults checks={checks} />
                             </CardContent>
                         </Card>
 

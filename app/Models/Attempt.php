@@ -70,6 +70,14 @@ class Attempt extends Model
     }
 
     /**
+     * @return HasMany<AttemptHint, $this>
+     */
+    public function hints(): HasMany
+    {
+        return $this->hasMany(AttemptHint::class);
+    }
+
+    /**
      * @return HasMany<AttemptFeedback, $this>
      */
     public function feedbacks(): HasMany

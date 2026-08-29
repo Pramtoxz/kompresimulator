@@ -6,6 +6,7 @@ use App\Models\Attempt;
 use App\Models\AttemptFile;
 use App\Models\Problem;
 use App\Models\ProblemGuide;
+use App\Models\ProblemTestCase;
 use App\Practice\ViewPreview;
 use App\Practice\WorkspaceFiles;
 
@@ -32,20 +33,52 @@ class WorkspacePresenter
     }
 
     /**
+     * @param  array<int, string>  $revealedSteps
      * @return array<int, array<string, mixed>>
      */
-    public static function guides(Problem $problem, bool $withExampleCode): array
+    public static function guides(Problem $problem, bool $alwaysShowCode, array $revealedSteps = []): array
     {
         return $problem->guides
-            ->map(fn (ProblemGuide $guide) => [
-                'step_no' => $guide->step_no,
-                'step_key' => $guide->step_key->value,
-                'label' => $guide->step_key->label(),
-                'instruction' => $guide->instruction,
-                'example_code' => $withExampleCode ? $guide->example_code : null,
-                'tips' => $guide->tips,
+            ->map(function (ProblemGuide $guide) use ($alwaysShowCode, $revealedSteps) {
+                $revealed = $alwaysShowCode || in_array($guide->step_key->value, $revealedSteps, true);
+
+                return [
+                    'step_no' => $guide->step_no,
+                    'step_key' => $guide->step_key->value,
+                    'label' => $guide->step_key->label(),
+                    'instruction' => $guide->instruction,
+                    'example_code' => $revealed ? $guide->example_code : null,
+                    'has_example_code' => $guide->example_code !== null && trim($guide->example_code) !== '',
+                    'revealed' => $revealed,
+                    'tips' => $guide->tips,
+                ];
+            })
+            ->all();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public static function testCases(Problem $problem): array
+    {
+        return $problem->testCases
+            ->map(fn (ProblemTestCase $testCase) => [
+                'id' => $testCase->id,
+                'label' => $testCase->label,
+                'inputs' => $testCase->input,
             ])
             ->all();
+    }
+
+    public static function totalField(Problem $problem): ?string
+    {
+        $rules = $problem->calc_rules['rules'] ?? [];
+
+        if ($rules === []) {
+            return null;
+        }
+
+        return $rules[array_key_last($rules)]['key'] ?? null;
     }
 
     public static function preview(Attempt $attempt): string

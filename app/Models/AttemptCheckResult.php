@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property CheckKind $kind
+ * @property bool $passed
+ * @property string|null $message
+ */
 #[Fillable(['attempt_id', 'test_case_id', 'kind', 'passed', 'actual', 'message'])]
 class AttemptCheckResult extends Model
 {

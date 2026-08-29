@@ -19,5 +19,7 @@ Route::middleware(['auth'])->prefix('latihan')->name('latihan.')->group(function
         Route::post('percobaan/{attempt}/berkas', [WorkspaceController::class, 'saveFile'])->name('attempt.file');
         Route::post('percobaan/{attempt}/migrasi', [WorkspaceController::class, 'runMigration'])->name('attempt.migration');
         Route::post('percobaan/{attempt}/baris', [WorkspaceController::class, 'storeRow'])->name('attempt.row');
+        Route::post('percobaan/{attempt}/hint', [WorkspaceController::class, 'revealHint'])->name('attempt.hint');
+        Route::post('percobaan/{attempt}/cek', [WorkspaceController::class, 'runChecks'])->name('attempt.checks');
     });
 });

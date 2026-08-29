@@ -74,7 +74,26 @@ export type WorkspaceGuide = {
     label: string;
     instruction: string;
     example_code: string | null;
+    has_example_code: boolean;
+    revealed: boolean;
     tips: string | null;
+};
+
+export type TestCaseInput = {
+    field: string;
+    value: string;
+};
+
+export type WorkspaceTestCase = {
+    id: number;
+    label: string;
+    inputs: TestCaseInput[];
+};
+
+export type WorkspaceCheck = {
+    kind: string;
+    passed: boolean;
+    message: string | null;
 };
 
 export type WorkspaceDatabase = {
