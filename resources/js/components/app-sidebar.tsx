@@ -1,7 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, GraduationCap, LayoutGrid } from 'lucide-react';
+import { GraduationCap, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -15,16 +14,9 @@ import {
 } from '@/components/ui/sidebar';
 import StudentController from '@/actions/App/Http/Controllers/Admin/StudentController';
 import { dashboard } from '@/routes';
+import { index as practiceIndex } from '@/routes/latihan';
 import type { Auth } from '@/types/auth';
 import type { NavItem } from '@/types';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
 
 const adminNavItems: NavItem[] = [
     {
@@ -34,25 +26,18 @@ const adminNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
+const studentNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Latihan',
+        href: practiceIndex(),
+        icon: LayoutGrid,
     },
 ];
 
 export function AppSidebar() {
     const { auth } = usePage<{ auth: Auth }>().props;
     const navItems =
-        auth.user?.role === 'admin'
-            ? [...mainNavItems, ...adminNavItems]
-            : mainNavItems;
+        auth.user?.role === 'admin' ? adminNavItems : studentNavItems;
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -73,7 +58,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

@@ -18,7 +18,7 @@ export default function AttemptShow({ attempt, problem }: Props) {
         <>
             <Head title="Latihan berjalan" />
 
-            <div className="safe-x flex h-full flex-1 flex-col gap-5 px-4 pt-4 pb-44 sm:px-6 md:pb-8 lg:px-8">
+            <div className="safe-x mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-4 pt-4 pb-44 sm:px-6 md:pb-8 lg:px-8">
                 <div className="bg-background/95 border-sidebar-border/70 dark:border-sidebar-border sticky top-16 z-20 -mx-4 border-b px-4 pb-3 backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:rounded-xl lg:border lg:p-4">
                     <AttemptTimer
                         startedAt={attempt.started_at}

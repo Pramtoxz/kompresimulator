@@ -24,7 +24,7 @@ export default function PracticeIndex({ student, practice }: Props) {
         <>
             <Head title="Latihan" />
 
-            <div className="safe-x flex h-full flex-1 flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
+            <div className="safe-x mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
                 <Heading
                     title={`Halo, ${student.name}`}
                     description={`${student.thesis_title ?? '—'} · ${student.framework_label ?? '—'} · target ${student.target_minutes} menit`}
