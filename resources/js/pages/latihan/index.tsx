@@ -1,6 +1,7 @@
 import { Form, Head, Link } from '@inertiajs/react';
 import AttemptController from '@/actions/App/Http/Controllers/Student/AttemptController';
 import Heading from '@/components/heading';
+import HistoryCardList from '@/components/latihan/history-card-list';
 import HistoryTable from '@/components/latihan/history-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +24,7 @@ export default function PracticeIndex({ student, practice }: Props) {
         <>
             <Head title="Latihan" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+            <div className="safe-x flex h-full flex-1 flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
                 <Heading
                     title={`Halo, ${student.name}`}
                     description={`${student.thesis_title ?? '—'} · ${student.framework_label ?? '—'} · target ${student.target_minutes} menit`}
@@ -43,7 +44,7 @@ export default function PracticeIndex({ student, practice }: Props) {
                             </p>
 
                             {practice.running !== null && (
-                                <Button asChild className="w-full">
+                                <Button asChild className="h-12 w-full">
                                     <Link
                                         href={AttemptController.show(
                                             practice.running,
@@ -64,7 +65,7 @@ export default function PracticeIndex({ student, practice }: Props) {
                                         {({ processing }) => (
                                             <Button
                                                 disabled={processing}
-                                                className="w-full"
+                                                className="h-12 w-full"
                                             >
                                                 {processing && <Spinner />}
                                                 Mulai latihan
@@ -106,7 +107,13 @@ export default function PracticeIndex({ student, practice }: Props) {
 
                 <div className="space-y-3">
                     <h2 className="text-lg font-medium">Riwayat latihan</h2>
-                    <HistoryTable rows={practice.history} />
+                    <div className="md:hidden">
+                        <HistoryCardList rows={practice.history} />
+                    </div>
+
+                    <div className="hidden md:block">
+                        <HistoryTable rows={practice.history} />
+                    </div>
                 </div>
             </div>
         </>

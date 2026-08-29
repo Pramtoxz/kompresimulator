@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import AttemptTimer from '@/components/latihan/attempt-timer';
+import CurrentStepDock from '@/components/latihan/current-step-dock';
 import FinishForm from '@/components/latihan/finish-form';
 import ProblemPanel from '@/components/latihan/problem-panel';
 import StepList from '@/components/latihan/step-list';
@@ -17,46 +18,45 @@ export default function AttemptShow({ attempt, problem }: Props) {
         <>
             <Head title="Latihan berjalan" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                        <h1 className="text-xl font-medium">
-                            Kerjakan di komputermu sendiri
-                        </h1>
-                        <p className="text-muted-foreground max-w-2xl text-sm">
-                            Install framework kosong, buka editor polos, dan
-                            jalankan tujuh langkah dari hafalan. Tekan Lanjut
-                            setiap satu langkah beres supaya sistem tahu kamu
-                            tersendat di mana.
-                        </p>
-                    </div>
-
+            <div className="safe-x flex h-full flex-1 flex-col gap-5 px-4 pt-4 pb-44 sm:px-6 md:pb-8 lg:px-8">
+                <div className="bg-background/95 border-sidebar-border/70 dark:border-sidebar-border sticky top-16 z-20 -mx-4 border-b px-4 pb-3 backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:rounded-xl lg:border lg:p-4">
                     <AttemptTimer
                         startedAt={attempt.started_at}
                         targetMinutes={attempt.target_minutes}
+                        currentStep={attempt.current_step}
+                        totalSteps={attempt.steps.length}
                     />
                 </div>
 
-                <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-                    <ProblemPanel problem={problem} />
+                <div className="grid gap-5 lg:grid-cols-[1fr_22rem] lg:items-start">
+                    <div className="order-2 space-y-5 lg:order-1">
+                        <ProblemPanel problem={problem} />
 
-                    <div className="space-y-4">
+                        <div id="selesai" className="scroll-mt-32">
+                            <FinishForm attemptId={attempt.id} />
+                        </div>
+                    </div>
+
+                    <div className="order-1 space-y-4 lg:order-2 lg:sticky lg:top-24">
                         <Card>
-                            <CardHeader>
+                            <CardHeader className="pb-2">
                                 <CardTitle className="text-base">
                                     Tujuh langkah
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="px-2">
                                 <StepList
-                                    attemptId={attempt.id}
                                     steps={attempt.steps}
                                     currentStep={attempt.current_step}
                                 />
                             </CardContent>
                         </Card>
 
-                        <FinishForm attemptId={attempt.id} />
+                        <CurrentStepDock
+                            attemptId={attempt.id}
+                            steps={attempt.steps}
+                            currentStep={attempt.current_step}
+                        />
                     </div>
                 </div>
             </div>

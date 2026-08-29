@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import StudentController from '@/actions/App/Http/Controllers/Admin/StudentController';
+import StudentCardList from '@/components/admin/student-card-list';
 import StudentTable from '@/components/admin/student-table';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
@@ -10,20 +11,26 @@ export default function StudentIndex({ students }: { students: StudentRow[] }) {
         <>
             <Head title="Mahasiswa" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                <div className="flex items-start justify-between gap-4">
+            <div className="safe-x flex h-full flex-1 flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <Heading
                         title="Mahasiswa"
                         description="Daftar mahasiswa beserta judul skripsi dan framework yang mereka pakai."
                     />
-                    <Button asChild>
+                    <Button asChild className="h-11 shrink-0 sm:h-10">
                         <Link href={StudentController.create()}>
                             Tambah mahasiswa
                         </Link>
                     </Button>
                 </div>
 
-                <StudentTable students={students} />
+                <div className="md:hidden">
+                    <StudentCardList students={students} />
+                </div>
+
+                <div className="hidden md:block">
+                    <StudentTable students={students} />
+                </div>
             </div>
         </>
     );

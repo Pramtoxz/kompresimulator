@@ -15,7 +15,7 @@ export default function StudentCreate({
         <>
             <Head title="Tambah mahasiswa" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+            <div className="safe-x flex h-full flex-1 flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
                 <Heading
                     title="Tambah mahasiswa"
                     description="Akun dibuat manual di sini, lalu kredensialnya dikirim ke mahasiswa."

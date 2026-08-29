@@ -16,7 +16,7 @@ export default function ProblemShow({ problem }: { problem: ProblemReview }) {
         <>
             <Head title={problem.title ?? 'Tinjau soal'} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+            <div className="safe-x flex h-full flex-1 flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <Heading
                         title={problem.title ?? 'Soal belum siap'}

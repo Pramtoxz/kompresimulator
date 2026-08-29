@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\Framework;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -16,7 +17,7 @@ class StudentStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('auth.users', 'email')],
+            'email' => ['required', 'email', 'max:255', Rule::unique(User::class, 'email')],
             'password' => ['required', 'string', Password::default()],
             'thesis_title' => ['required', 'string', 'max:255'],
             'framework' => ['required', Rule::enum(Framework::class)],

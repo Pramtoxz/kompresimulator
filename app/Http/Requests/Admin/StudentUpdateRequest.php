@@ -19,7 +19,7 @@ class StudentUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required', 'email', 'max:255',
-                Rule::unique('auth.users', 'email')->ignore($this->student()->id),
+                Rule::unique(User::class, 'email')->ignore($this->student()->id),
             ],
             'password' => ['nullable', 'string', Password::default()],
             'thesis_title' => ['required', 'string', 'max:255'],

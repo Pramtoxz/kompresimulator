@@ -1,7 +1,3 @@
-import { Form } from '@inertiajs/react';
-import AttemptController from '@/actions/App/Http/Controllers/Student/AttemptController';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
 import type { PracticeStep } from '@/types/latihan';
 
 function minutes(seconds: number | null): string {
@@ -13,16 +9,13 @@ function minutes(seconds: number | null): string {
 }
 
 type Props = {
-    attemptId: number;
     steps: PracticeStep[];
     currentStep: number;
 };
 
-export default function StepList({ attemptId, steps, currentStep }: Props) {
-    const lastStep = steps.length;
-
+export default function StepList({ steps, currentStep }: Props) {
     return (
-        <ol className="space-y-2">
+        <ol className="space-y-1">
             {steps.map((step) => {
                 const active = step.step_no === currentStep;
                 const done = step.status === 'done';
@@ -30,52 +23,33 @@ export default function StepList({ attemptId, steps, currentStep }: Props) {
                 return (
                     <li
                         key={step.step_key}
-                        className={`flex items-center justify-between gap-4 rounded-lg border px-4 py-3 ${
-                            active
-                                ? 'border-primary bg-primary/5'
-                                : 'border-sidebar-border/70 dark:border-sidebar-border'
+                        aria-current={active ? 'step' : undefined}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ${
+                            active ? 'bg-primary/5 ring-primary/30 ring-1' : ''
                         }`}
                     >
-                        <div className="flex items-center gap-3">
-                            <span
-                                className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
-                                    done
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted text-muted-foreground'
-                                }`}
-                            >
-                                {step.step_no}
-                            </span>
-                            <span
-                                className={
-                                    done ? 'text-muted-foreground' : 'font-medium'
-                                }
-                            >
-                                {step.label}
-                            </span>
-                        </div>
+                        <span
+                            aria-hidden
+                            className={`flex size-6 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-semibold ${
+                                done
+                                    ? 'border-primary bg-primary text-primary-foreground'
+                                    : active
+                                      ? 'border-primary text-primary'
+                                      : 'border-muted-foreground/30 text-muted-foreground'
+                            }`}
+                        >
+                            {step.step_no}
+                        </span>
 
-                        <div className="flex items-center gap-3">
-                            <span className="text-muted-foreground font-mono text-xs">
-                                {minutes(step.duration_seconds)}
-                            </span>
+                        <span
+                            className={`min-w-0 flex-1 text-sm ${done ? 'text-muted-foreground' : 'font-medium'}`}
+                        >
+                            {step.label}
+                        </span>
 
-                            {active && step.step_no < lastStep && (
-                                <Form
-                                    {...AttemptController.advance.form(
-                                        attemptId,
-                                    )}
-                                    options={{ preserveScroll: true }}
-                                >
-                                    {({ processing }) => (
-                                        <Button size="sm" disabled={processing}>
-                                            {processing && <Spinner />}
-                                            Lanjut
-                                        </Button>
-                                    )}
-                                </Form>
-                            )}
-                        </div>
+                        <span className="text-muted-foreground shrink-0 font-mono text-xs tabular-nums">
+                            {minutes(step.duration_seconds)}
+                        </span>
                     </li>
                 );
             })}

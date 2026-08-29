@@ -16,7 +16,7 @@ export default function StudentEdit({ student, frameworks }: Props) {
         <>
             <Head title={`Ubah ${student.name}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+            <div className="safe-x flex h-full flex-1 flex-col gap-8 px-4 py-5 sm:px-6 lg:px-8">
                 <Heading
                     title="Ubah mahasiswa"
                     description="Mengubah judul skripsi atau framework tidak mengubah soal yang sudah digenerate."

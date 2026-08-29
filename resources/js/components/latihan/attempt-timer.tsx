@@ -10,9 +10,16 @@ function format(totalSeconds: number): string {
 type Props = {
     startedAt: string;
     targetMinutes: number;
+    currentStep: number;
+    totalSteps: number;
 };
 
-export default function AttemptTimer({ startedAt, targetMinutes }: Props) {
+export default function AttemptTimer({
+    startedAt,
+    targetMinutes,
+    currentStep,
+    totalSteps,
+}: Props) {
     const [elapsed, setElapsed] = useState(0);
 
     useEffect(() => {
@@ -29,17 +36,39 @@ export default function AttemptTimer({ startedAt, targetMinutes }: Props) {
 
     const target = targetMinutes * 60;
     const overTarget = elapsed > target;
+    const progress = Math.min(100, (elapsed / target) * 100);
 
     return (
-        <div className="text-right">
-            <p
-                className={`font-mono text-4xl tabular-nums ${overTarget ? 'text-destructive' : ''}`}
+        <div className="space-y-2">
+            <div className="flex items-baseline justify-between gap-4">
+                <p
+                    className={`font-mono text-3xl leading-none tabular-nums sm:text-4xl ${overTarget ? 'text-destructive' : ''}`}
+                >
+                    {format(elapsed)}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                    Langkah {currentStep} dari {totalSteps}
+                </p>
+            </div>
+
+            <div
+                className="bg-muted h-1 w-full overflow-hidden rounded-full"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={target}
+                aria-valuenow={Math.min(elapsed, target)}
+                aria-label={`Waktu berjalan, target ${targetMinutes} menit`}
             >
-                {format(elapsed)}
-            </p>
+                <div
+                    className={`h-full transition-[width] duration-1000 ease-linear ${overTarget ? 'bg-destructive' : 'bg-primary'}`}
+                    style={{ width: `${overTarget ? 100 : progress}%` }}
+                />
+            </div>
+
             <p className="text-muted-foreground text-xs">
-                target {targetMinutes} menit
-                {overTarget && ' · lewat target'}
+                {overTarget
+                    ? `Lewat target ${targetMinutes} menit. Terus jalan sampai selesai.`
+                    : `Target ${targetMinutes} menit.`}
             </p>
         </div>
     );
