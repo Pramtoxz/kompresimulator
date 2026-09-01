@@ -78,13 +78,19 @@ export type ProblemTestCase = {
     expected_total: number | null;
 };
 
+export type ProblemGuideCard = {
+    title: string;
+    instruction: string;
+    code: string | null;
+    language: string;
+    note: string | null;
+};
+
 export type ProblemGuide = {
     step_no: number;
     step_key: string;
     step_label: string;
-    instruction: string;
-    example_code: string | null;
-    tips: string | null;
+    cards: ProblemGuideCard[];
 };
 
 export type ProblemReview = {

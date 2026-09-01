@@ -75,15 +75,38 @@ export type WorkspaceFile = {
     content: string;
 };
 
+export type GuideCard = {
+    title: string;
+    instruction: string;
+    code: string | null;
+    language: string;
+    note: string | null;
+    audio: string | null;
+};
+
 export type WorkspaceGuide = {
     step_no: number;
     step_key: string;
     label: string;
-    instruction: string;
-    example_code: string | null;
+    cards: GuideCard[];
     has_example_code: boolean;
     revealed: boolean;
-    tips: string | null;
+};
+
+export type BriefingColumn = {
+    label: string;
+    name: string;
+    sql: string;
+    reason: string;
+};
+
+export type Briefing = {
+    title: string | null;
+    brief: string | null;
+    table: string;
+    key_field_label: string | null;
+    total_field_label: string | null;
+    columns: BriefingColumn[];
 };
 
 export type TestCaseInput = {

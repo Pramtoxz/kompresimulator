@@ -2,8 +2,9 @@
 
 namespace App\Http\Presenters;
 
+use App\Enums\StepKey;
+use App\Guides\StepCards;
 use App\Models\Problem;
-use App\Models\ProblemGuide;
 use App\Models\ProblemTestCase;
 
 class ProblemPresenter
@@ -36,14 +37,27 @@ class ProblemPresenter
                 'inputs' => $case->input,
                 'expected_total' => $case->expected['total'] ?? null,
             ])->all(),
-            'guides' => $problem->guides->map(fn (ProblemGuide $guide) => [
-                'step_no' => $guide->step_no,
-                'step_key' => $guide->step_key->value,
-                'step_label' => $guide->step_key->label(),
-                'instruction' => $guide->instruction,
-                'example_code' => $guide->example_code,
-                'tips' => $guide->tips,
-            ])->all(),
+            'guides' => self::cards($problem),
         ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function cards(Problem $problem): array
+    {
+        $cards = StepCards::forProblem($problem);
+        $rows = [];
+
+        foreach (StepKey::cases() as $step) {
+            $rows[] = [
+                'step_no' => $step->number(),
+                'step_key' => $step->value,
+                'step_label' => $step->labelFor($problem->framework),
+                'cards' => $cards[$step->value] ?? [],
+            ];
+        }
+
+        return $rows;
     }
 }

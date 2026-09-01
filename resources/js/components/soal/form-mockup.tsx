@@ -1,7 +1,7 @@
 import type { FormField } from '@/types/latihan';
 
 const hints: Record<string, string> = {
-    select: 'pilihan',
+    select: 'select box',
     readonly: 'otomatis',
     number: 'angka',
     date: 'tanggal',

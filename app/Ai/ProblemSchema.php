@@ -43,7 +43,7 @@ class ProblemSchema
                 ->description('Label yang tampil di form, bahasa Indonesia dengan huruf kapital di awal kata, misalnya Nama Pelanggan')
                 ->required(),
             'name' => $schema->string()
-                ->description('Nama field dan nama kolom database. Bahasa Indonesia, huruf kecil, pemisah garis bawah, misalnya nama_pelanggan')
+                ->description('Nama field dan nama kolom database. Bahasa Indonesia, huruf kecil semua, digabung tanpa spasi dan tanpa garis bawah, misalnya namapelanggan, hargasewa, totalbayar')
                 ->required(),
             'input' => $schema->string()
                 ->enum(['text', 'number', 'date', 'select', 'readonly'])
@@ -58,7 +58,7 @@ class ProblemSchema
     {
         return $schema->object([
             'key_field' => $schema->string()
-                ->description('Nama field bertipe select yang menjadi kunci tabel acuan, misalnya kode_paket')
+                ->description('Nama field bertipe select yang menjadi kunci tabel acuan, misalnya namamobil')
                 ->required(),
             'columns' => $schema->array()->items($schema->string())
                 ->description('Nama kolom tabel acuan, memakai nama field yang sama dengan form')
@@ -75,7 +75,7 @@ class ProblemSchema
     {
         return $schema->object([
             'table' => $schema->string()
-                ->description('Nama tabel bahasa Indonesia, huruf kecil, misalnya pemesanan')
+                ->description('Nama tabel bahasa Indonesia, huruf kecil, satu kata tanpa garis bawah, misalnya sewa')
                 ->required(),
             'columns' => $schema->array()->items($schema->object([
                 'name' => $schema->string()
@@ -93,13 +93,13 @@ class ProblemSchema
     {
         return $schema->array()->items($schema->object([
             'key' => $schema->string()
-                ->description('Nama field hasil hitungan, sama dengan name pada form_fields, misalnya potongan')
+                ->description('Nama field hasil hitungan, sama dengan name pada form_fields, misalnya totalbayar')
                 ->required(),
             'description' => $schema->string()
-                ->description('Aturan dalam bahasa Indonesia polos seperti di kertas soal, misalnya Jika lama lebih dari 3 maka potongan 10 persen dari harga, selain itu 0')
+                ->description('Aturan dalam bahasa Indonesia polos seperti di kertas soal, misalnya Jika lamasewa lebih dari 3 maka potongan 10 persen dari hargasewa, selain itu 0')
                 ->required(),
             'expression' => $schema->string()
-                ->description('Hanya sisi kanan ekspresi JavaScript satu baris tanpa nama variabel di kiri dan tanpa titik koma, memakai nama field lain. Contoh: lama > 3 ? harga_paket * 0.1 : 0')
+                ->description('Hanya sisi kanan ekspresi JavaScript satu baris tanpa nama variabel di kiri dan tanpa titik koma, memakai nama field lain. Contoh: lamasewa > 3 ? hargasewa * 0.1 : 0')
                 ->required(),
         ]))
             ->description('Aturan hitung berurutan. Aturan terakhir wajib menghasilkan nilai akhir yang disimpan')

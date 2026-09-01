@@ -8,6 +8,7 @@ import StepDock from '@/components/latihan/step-dock';
 import StepInstruction from '@/components/latihan/step-instruction';
 import StepWorkbench from '@/components/latihan/step-workbench';
 import type {
+    Briefing,
     PracticeAttempt,
     PracticeProblem,
     WorkspaceCheck,
@@ -21,6 +22,8 @@ type Props = {
     attempt: PracticeAttempt;
     problem: PracticeProblem;
     guides: WorkspaceGuide[];
+    briefing: Briefing | null;
+    briefingAudio: string[];
     files: WorkspaceFile[];
     preview: string;
     database: WorkspaceDatabase;
@@ -34,6 +37,8 @@ export default function WorkspaceShow({
     attempt,
     problem,
     guides,
+    briefing,
+    briefingAudio,
     files,
     preview,
     database,
@@ -75,6 +80,13 @@ export default function WorkspaceShow({
     const runMigration = () =>
         router.post(
             WorkspaceController.runMigration.url(attempt.id),
+            {},
+            { preserveScroll: true },
+        );
+
+    const createTable = () =>
+        router.post(
+            WorkspaceController.createTable.url(attempt.id),
             {},
             { preserveScroll: true },
         );
@@ -131,6 +143,8 @@ export default function WorkspaceShow({
             <main className="safe-x mx-auto w-full max-w-5xl space-y-8 px-4 pt-6 pb-32 sm:px-6">
                 <StepInstruction
                     guide={guide}
+                    briefing={briefing}
+                    briefingAudio={briefingAudio}
                     attemptId={attempt.id}
                     guided={guided}
                 />
@@ -140,6 +154,7 @@ export default function WorkspaceShow({
                     file={file}
                     onSaveFile={saveFile}
                     onRunMigration={runMigration}
+                    onCreateTable={createTable}
                     onSubmitRow={submitRow}
                     onRunChecks={runChecks}
                     previewRef={previewRef}

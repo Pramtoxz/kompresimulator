@@ -63,6 +63,7 @@ class StructureCheck
         return match ($framework) {
             Framework::LaravelBlade => [
                 'deklarasi class' => '/class\s+\w+\s+extends\s+Model/i',
+                'properti $table' => '/\$table\s*=/',
                 'properti $fillable' => '/\$fillable\s*=/',
             ],
             Framework::Ci4 => [
@@ -81,13 +82,13 @@ class StructureCheck
         return match ($framework) {
             Framework::LaravelBlade => [
                 'deklarasi class' => '/class\s+\w+\s+extends\s+Controller/i',
+                'pemanggilan model' => '/use\s+App\S*Models\S*\s*;/i',
                 'perintah simpan data' => '/(::create\s*\(|->create\s*\(|->save\s*\(|->insert\s*\()/i',
-                'pengembalian view' => '/return\s+view\s*\(/i',
             ],
             Framework::Ci4 => [
                 'deklarasi class' => '/class\s+\w+\s+extends\s+(BaseController|Controller)/i',
+                'pemanggilan model' => '/use\s+App\S*Models\S*\s*;/i',
                 'perintah simpan data' => '/(->save\s*\(|->insert\s*\()/i',
-                'pengembalian view' => '/return\s+view\s*\(/i',
             ],
         };
     }

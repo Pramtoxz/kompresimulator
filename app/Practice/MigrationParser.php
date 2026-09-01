@@ -6,16 +6,14 @@ use App\Enums\Framework;
 
 class MigrationParser
 {
-    public function __construct(
-        private LaravelMigrationParser $laravel,
-        private Ci4MigrationParser $ci4,
-    ) {}
+    public function __construct(private LaravelMigrationParser $laravel) {}
 
     public function parse(string $code, Framework $framework): ParsedMigration
     {
-        return match ($framework) {
-            Framework::LaravelBlade => $this->laravel->parse($code),
-            Framework::Ci4 => $this->ci4->parse($code),
-        };
+        if ($framework !== Framework::LaravelBlade) {
+            throw new MigrationParseException('Framework ini tidak memakai file migration. Tabelnya dibuat lewat tombol Buat tabel.');
+        }
+
+        return $this->laravel->parse($code);
     }
 }

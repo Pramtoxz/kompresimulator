@@ -13,22 +13,37 @@ export default function ProblemGuides({
                     <CardHeader>
                         <CardTitle className="text-base">
                             {guide.step_no}. {guide.step_label}
+                            <span className="text-muted-foreground ml-2 text-xs font-normal">
+                                {guide.cards.length} kartu
+                            </span>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-3">
-                        <p className="text-sm">{guide.instruction}</p>
+                    <CardContent className="space-y-4">
+                        {guide.cards.map((card, index) => (
+                            <div
+                                key={card.title}
+                                className="space-y-2 border-l-2 pl-3"
+                            >
+                                <p className="text-sm font-medium">
+                                    {index + 1}. {card.title}
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                    {card.instruction}
+                                </p>
 
-                        {guide.example_code && (
-                            <pre className="bg-muted max-h-96 overflow-auto rounded-md p-3 font-mono text-xs">
-                                {guide.example_code}
-                            </pre>
-                        )}
+                                {card.code && (
+                                    <pre className="bg-muted max-h-96 overflow-auto rounded-md p-3 font-mono text-xs">
+                                        {card.code}
+                                    </pre>
+                                )}
 
-                        {guide.tips && (
-                            <p className="text-muted-foreground text-sm">
-                                Tips: {guide.tips}
-                            </p>
-                        )}
+                                {card.note && (
+                                    <p className="text-muted-foreground text-sm">
+                                        Catatan: {card.note}
+                                    </p>
+                                )}
+                            </div>
+                        ))}
                     </CardContent>
                 </Card>
             ))}

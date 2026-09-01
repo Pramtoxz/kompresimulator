@@ -2,13 +2,17 @@
 
 namespace App\Http\Presenters;
 
+use App\Enums\Level;
+use App\Enums\StepKey;
+use App\Guides\StepCards;
 use App\Models\Attempt;
 use App\Models\AttemptFile;
 use App\Models\Problem;
-use App\Models\ProblemGuide;
 use App\Models\ProblemTestCase;
 use App\Practice\ViewPreview;
 use App\Practice\WorkspaceFiles;
+use App\Tts\ClipLibrary;
+use App\Tts\NarrationScript;
 
 class WorkspacePresenter
 {
@@ -36,24 +40,73 @@ class WorkspacePresenter
      * @param  array<int, string>  $revealedSteps
      * @return array<int, array<string, mixed>>
      */
-    public static function guides(Problem $problem, bool $alwaysShowCode, array $revealedSteps = []): array
+    public static function guides(Problem $problem, Level $level, array $revealedSteps = []): array
     {
-        return $problem->guides
-            ->map(function (ProblemGuide $guide) use ($alwaysShowCode, $revealedSteps) {
-                $revealed = $alwaysShowCode || in_array($guide->step_key->value, $revealedSteps, true);
+        $cards = StepCards::forProblem($problem);
+        $guided = $level->showsExampleCode();
+
+        return collect(StepKey::cases())
+            ->map(function (StepKey $step) use ($problem, $cards, $guided, $revealedSteps) {
+                $revealed = $guided || in_array($step->value, $revealedSteps, true);
+                $stepCards = $cards[$step->value] ?? [];
 
                 return [
-                    'step_no' => $guide->step_no,
-                    'step_key' => $guide->step_key->value,
-                    'label' => $guide->step_key->label(),
-                    'instruction' => $guide->instruction,
-                    'example_code' => $revealed ? $guide->example_code : null,
-                    'has_example_code' => $guide->example_code !== null && trim($guide->example_code) !== '',
+                    'step_no' => $step->number(),
+                    'step_key' => $step->value,
+                    'label' => $step->labelFor($problem->framework),
+                    'cards' => self::cards($stepCards, $problem, $step, $revealed, $guided),
+                    'has_example_code' => self::hasCode($stepCards),
                     'revealed' => $revealed,
-                    'tips' => $guide->tips,
                 ];
             })
             ->all();
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $cards
+     * @return array<int, array<string, mixed>>
+     */
+    private static function cards(array $cards, Problem $problem, StepKey $step, bool $revealed, bool $guided): array
+    {
+        return array_map(fn (int $index) => [
+            ...$cards[$index],
+            'code' => $revealed ? $cards[$index]['code'] : null,
+            'audio' => $guided
+                ? ClipLibrary::url(NarrationScript::scope($problem->framework, $step).'/'.$step->value.'/'.$index)
+                : null,
+        ], array_keys($cards));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function briefingAudio(): array
+    {
+        $urls = [];
+
+        foreach (NarrationScript::briefing() as $clip) {
+            $url = ClipLibrary::url($clip->key());
+
+            if ($url !== null) {
+                $urls[] = $url;
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $cards
+     */
+    private static function hasCode(array $cards): bool
+    {
+        foreach ($cards as $card) {
+            if (($card['code'] ?? null) !== null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

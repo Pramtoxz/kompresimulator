@@ -14,6 +14,7 @@ type Props = {
     file: WorkspaceFile | undefined;
     onSaveFile: (content: string) => void;
     onRunMigration: () => void;
+    onCreateTable: () => void;
     onSubmitRow: (data: Record<string, string>) => void;
     onRunChecks: () => void;
     previewRef: React.RefObject<PreviewHandle | null>;
@@ -29,6 +30,7 @@ export default function StepWorkbench({
     file,
     onSaveFile,
     onRunMigration,
+    onCreateTable,
     onSubmitRow,
     onRunChecks,
     previewRef,
@@ -58,12 +60,22 @@ export default function StepWorkbench({
                         <h2 className="text-base font-medium">Tabel latihan</h2>
                         <Button
                             variant="secondary"
-                            onClick={onRunMigration}
+                            onClick={file ? onRunMigration : onCreateTable}
                             className="h-11"
                         >
-                            Jalankan migration
+                            {file ? 'Jalankan migration' : 'Buat tabel'}
                         </Button>
                     </div>
+
+                    {!file && (
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                            Di ujian nanti tabelnya kamu buat sendiri lewat
+                            SQLyog. Di sini tekan Buat tabel, dan tabel yang
+                            sama dibuatkan langsung dari soal supaya tombol
+                            Simpan nanti benar-benar menyimpan.
+                        </p>
+                    )}
+
                     <DatabasePreview database={database} />
                 </section>
             )}

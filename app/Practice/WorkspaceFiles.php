@@ -18,14 +18,13 @@ class WorkspaceFiles
                 ['path' => 'app/Models/Model.php', 'step_key' => StepKey::Model, 'language' => 'php'],
                 ['path' => 'app/Http/Controllers/Controller.php', 'step_key' => StepKey::Controller, 'language' => 'php'],
                 ['path' => 'routes/web.php', 'step_key' => StepKey::Routes, 'language' => 'php'],
-                ['path' => 'resources/views/form.blade.php', 'step_key' => StepKey::Coding, 'language' => 'blade'],
+                ['path' => 'resources/views/welcome.blade.php', 'step_key' => StepKey::Coding, 'language' => 'blade'],
             ],
             Framework::Ci4 => [
-                ['path' => 'app/Database/Migrations/CreateTable.php', 'step_key' => StepKey::Migration, 'language' => 'php'],
                 ['path' => 'app/Models/Model.php', 'step_key' => StepKey::Model, 'language' => 'php'],
                 ['path' => 'app/Controllers/Controller.php', 'step_key' => StepKey::Controller, 'language' => 'php'],
                 ['path' => 'app/Config/Routes.php', 'step_key' => StepKey::Routes, 'language' => 'php'],
-                ['path' => 'app/Views/form.php', 'step_key' => StepKey::Coding, 'language' => 'php'],
+                ['path' => 'app/Views/welcome_message.php', 'step_key' => StepKey::Coding, 'language' => 'php'],
             ],
         };
     }

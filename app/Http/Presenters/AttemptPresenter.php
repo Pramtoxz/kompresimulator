@@ -24,7 +24,7 @@ class AttemptPresenter
             'steps' => $attempt->steps->map(fn (AttemptStep $step) => [
                 'step_no' => $step->step_no,
                 'step_key' => $step->step_key->value,
-                'label' => $step->step_key->label(),
+                'label' => $step->step_key->labelFor($attempt->problem->framework),
                 'status' => $step->status->value,
                 'duration_seconds' => $step->duration_seconds,
             ])->all(),

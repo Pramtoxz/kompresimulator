@@ -37,4 +37,13 @@ enum StepKey: string
             self::Done => 'Selesai',
         };
     }
+
+    public function labelFor(Framework $framework): string
+    {
+        if ($this === self::Migration && $framework === Framework::Ci4) {
+            return 'Buat tabel di SQLyog';
+        }
+
+        return $this->label();
+    }
 }

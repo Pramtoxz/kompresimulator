@@ -1,16 +1,22 @@
 import { Form } from '@inertiajs/react';
 import WorkspaceController from '@/actions/App/Http/Controllers/Student/WorkspaceController';
 import { Button } from '@/components/ui/button';
-import type { WorkspaceGuide } from '@/types/latihan';
+import type { Briefing, WorkspaceGuide } from '@/types/latihan';
+import BriefingDialog from './briefing-dialog';
+import StepCards from './step-cards';
 
 type Props = {
     guide: WorkspaceGuide | null;
+    briefing: Briefing | null;
+    briefingAudio: string[];
     attemptId: number;
     guided: boolean;
 };
 
 export default function StepInstruction({
     guide,
+    briefing,
+    briefingAudio,
     attemptId,
     guided,
 }: Props) {
@@ -21,20 +27,22 @@ export default function StepInstruction({
     const canReveal = !guided && !guide.revealed && guide.has_example_code;
 
     return (
-        <section className="space-y-3">
-            <h1 className="text-xl font-semibold tracking-tight">
-                Langkah {guide.step_no} — {guide.label}
-            </h1>
+        <section className="space-y-4">
+            <div className="space-y-2">
+                <h1 className="text-xl font-semibold tracking-tight">
+                    Langkah {guide.step_no} — {guide.label}
+                </h1>
 
-            <p className="text-sm leading-relaxed">{guide.instruction}</p>
+                {briefing && (
+                    <BriefingDialog
+                        briefing={briefing}
+                        audio={briefingAudio}
+                        attemptId={attemptId}
+                    />
+                )}
+            </div>
 
-            {guide.example_code && (
-                <pre className="bg-muted max-h-80 overflow-auto rounded-lg p-3 font-mono text-xs">
-                    {guide.example_code}
-                </pre>
-            )}
-
-            {canReveal && (
+            {canReveal ? (
                 <Form
                     {...WorkspaceController.revealHint.form(attemptId)}
                     options={{ preserveScroll: true }}
@@ -48,22 +56,17 @@ export default function StepInstruction({
                             />
                             <Button
                                 variant="outline"
-                                size="sm"
                                 disabled={processing}
-                                className="h-10"
+                                className="h-11 w-full sm:h-10 sm:w-auto"
                             >
                                 Buka contoh kode
                             </Button>
                         </>
                     )}
                 </Form>
-            )}
+            ) : null}
 
-            {guide.tips && (
-                <p className="text-muted-foreground border-l-2 pl-3 text-sm">
-                    {guide.tips}
-                </p>
-            )}
+            <StepCards cards={guide.cards} stepKey={guide.step_key} />
         </section>
     );
 }

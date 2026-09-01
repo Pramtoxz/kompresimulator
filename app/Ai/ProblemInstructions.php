@@ -7,7 +7,7 @@ use App\Enums\StepKey;
 
 class ProblemInstructions
 {
-    public const VERSION = 'v2';
+    public const VERSION = 'v3';
 
     public static function for(Framework $framework): string
     {
@@ -23,7 +23,7 @@ class ProblemInstructions
             self::frameworkNotes($framework),
             "Panduan wajib berisi tepat tujuh langkah dengan step_key berikut, berurutan:\n".$steps,
             'Panduan ditulis untuk orang yang baru pertama kali menyentuh framework. Sebutkan nama berkas dan letaknya, lalu kode utuh yang bisa langsung diketik ulang. Hindari istilah yang tidak dijelaskan.',
-            'Seluruh label, nama field, nama kolom, dan nama tabel ditulis dalam bahasa Indonesia. Nama field memakai huruf kecil dengan garis bawah, misalnya nama_pelanggan, kode_paket, harga_paket, jumlah_peserta, sisa_bayar, potongan, total. Dilarang memakai bahasa Inggris seperti customer_name atau total_price.',
+            'Seluruh label, nama field, nama kolom, dan nama tabel ditulis dalam bahasa Indonesia. Nama field memakai huruf kecil semua dan digabung tanpa spasi maupun garis bawah, misalnya namapelanggan, namamobil, hargasewa, lamasewa, potongan, totalbayar, sisabayar. Dilarang memakai garis bawah seperti nama_pelanggan, dan dilarang memakai bahasa Inggris seperti customername atau totalprice. Nama tabel juga satu kata huruf kecil tanpa garis bawah, misalnya sewa atau pemesanan.',
         ]);
     }
 
@@ -35,8 +35,8 @@ class ProblemInstructions
             '2. Satu field bertipe select yang menjadi kunci, misalnya Kode Paket atau Nama Paket. Memilih nilai di field ini mengisi otomatis field turunannya seperti harga.',
             '3. Beberapa field readonly yang terisi otomatis dari hasil hitungan, misalnya Potongan, Total, atau Sisa Bayar.',
             '4. Dua tombol tetap: Simpan dan Laporan.',
-            '5. Satu tabel acuan berisi minimal tiga baris, misalnya K-01 Eks. Bukittinggi 30000000, K-02 Eks. Solok 20000000, K-03 Eks. Alahan Panjang 10000000.',
-            '6. Aturan hitung bersyarat yang ditulis polos, misalnya: jika lama lebih dari 3 maka potongan 10 persen dari harga, selain itu 0. Total sama dengan harga dikali lama dikurangi potongan.',
+            '5. Satu tabel acuan berisi minimal tiga baris, misalnya avanza 150000, brio 200000, fortuner 300000.',
+            '6. Aturan hitung bersyarat yang ditulis polos, misalnya: jika lamasewa lebih dari 3 maka potongan 10 persen dari hargasewa, selain itu 0. Totalbayar sama dengan hargasewa dikali lamasewa dikurangi potongan.',
         ]);
     }
 

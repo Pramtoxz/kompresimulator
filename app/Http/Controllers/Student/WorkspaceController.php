@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Actions\Practice\CreateTableFromSpec;
 use App\Actions\Practice\RevealHint;
 use App\Actions\Practice\RunAttemptChecks;
 use App\Actions\Practice\RunWorkspaceMigration;
 use App\Actions\Practice\SaveWorkspaceFile;
 use App\Actions\Practice\StorePracticeRow;
 use App\Enums\Level;
+use App\Guides\Briefing;
 use App\Http\Controllers\Controller;
 use App\Http\Presenters\AttemptPresenter;
 use App\Http\Presenters\WorkspacePresenter;
@@ -36,9 +38,15 @@ class WorkspaceController extends Controller
             'problem' => AttemptPresenter::problem($attempt->problem),
             'guides' => WorkspacePresenter::guides(
                 $attempt->problem,
-                $attempt->level === Level::Awal,
+                $attempt->level,
                 $attempt->hints->pluck('step_key')->map(fn ($step) => $step->value)->all(),
             ),
+            'briefing' => $attempt->level === Level::Awal
+                ? Briefing::for($attempt->problem)
+                : null,
+            'briefingAudio' => $attempt->level === Level::Awal
+                ? WorkspacePresenter::briefingAudio()
+                : [],
             'testCases' => WorkspacePresenter::testCases($attempt->problem),
             'totalField' => WorkspacePresenter::totalField($attempt->problem),
             'checks' => $this->checks($attempt),
@@ -60,6 +68,22 @@ class WorkspaceController extends Controller
     {
         try {
             $result = $runner->handle($attempt);
+        } catch (MigrationParseException $exception) {
+            return back()->withErrors(['migration' => $exception->getMessage()]);
+        }
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Tabel '.$result['table'].' dibuat dengan '.count($result['columns']).' kolom.',
+        ]);
+
+        return back();
+    }
+
+    public function createTable(Attempt $attempt, CreateTableFromSpec $creator): RedirectResponse
+    {
+        try {
+            $result = $creator->handle($attempt);
         } catch (MigrationParseException $exception) {
             return back()->withErrors(['migration' => $exception->getMessage()]);
         }
