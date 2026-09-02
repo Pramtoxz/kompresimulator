@@ -41,6 +41,7 @@ class SharedScript
             'Controller itu yang menangkap data dari form lalu menyerahkannya ke model. Buat filenya dulu dengan perintah di layar. Dua bagian berikutnya semuanya diisi ke file yang sama ini, jadi jangan bikin file baru lagi.',
             'Controller belum tahu model yang tadi kamu buat. Tambahkan satu baris use di bagian atas file, sebaris dengan use yang sudah ada. Kalau baris ini lupa ditulis, nanti muncul pesan class not found begitu tombol Simpan ditekan.',
             'Sekarang isi method penyimpannya. Inilah yang jalan saat tombol Simpan ditekan: dia mengambil semua isian form, lalu memasukkannya ke tabel. Kalau nanti ada kolom yang kosong padahal formnya terisi, periksa lagi daftar kolom di model tadi.',
+            'Terakhir, tambahkan method kedua untuk laporan, masih di file yang sama, di bawah method tadi. Tugasnya cuma dua baris: ambil semua data dari tabel, lalu kirim ke halaman laporan. Nama yang kamu tulis di dalam compact itulah yang nanti dipakai di halaman laporannya, jadi ingat baik baik.',
         ];
     }
 
@@ -51,7 +52,7 @@ class SharedScript
     {
         return [
             'Route itu daftar alamat halaman. Bagian ini sering terlupa, padahal tanpa route, controller yang tadi susah payah kamu tulis tidak akan pernah kepanggil. Filenya sudah ada sejak project dibuat dan sudah berisi satu route bawaan. Route bawaan itu jangan dihapus, karena dialah yang menampilkan halaman formmu nanti.',
-            'Sekarang tambahkan satu alamat lagi, khusus untuk tombol Simpan. Perhatikan kata post, bukan get. Alamat ini harus sama persis dengan yang kamu tulis di bagian action pada form, kalau beda datanya tidak akan sampai.',
+            'Sekarang tambahkan dua alamat lagi, satu untuk tombol Simpan dan satu untuk tombol Laporan. Perhatikan bedanya: yang simpan pakai post karena mengirim data, yang laporan pakai get karena cuma membuka halaman. Alamat simpan harus sama persis dengan yang kamu tulis di bagian action pada form, kalau beda datanya tidak akan sampai.',
             'Sebelum lanjut, pastikan routenya benar benar terbaca. Perintah ini menampilkan semua alamat yang terdaftar. Cuma sepuluh detik, tapi menyelamatkan banyak waktu. Lebih baik ketahuan salah sekarang daripada nanti saat tombol Simpan ditekan dan halamannya malah not found.',
         ];
     }
@@ -65,6 +66,7 @@ class SharedScript
             'Sekarang bagian yang paling banyak diketik. Buka file tampilan bawaannya, blok semua isinya, hapus, lalu ganti dengan form yang ada di layar. Urutan fieldnya ikuti soal dari atas ke bawah, jangan diacak. Yang paling penting, isi name pada tiap input harus sama persis dengan nama kolom di tabel.',
             'Tambahkan tag script tepat sebelum penutup body, lalu tulis fungsi pertama. Fungsi ini jalan tiap dropdown diganti, tugasnya mengisi sendiri field yang nilainya mengikuti pilihan. Tulis angkanya apa adanya tanpa titik pemisah ribuan, karena titik itu akan dibaca sebagai angka desimal.',
             'Masih di dalam tag script yang sama, tambahkan fungsi kedua di bawah fungsi tadi. Fungsi ini jalan tiap angka diketik, tugasnya menghitung lalu mengisi field hasil. Urutan barisnya penting, karena nilai yang dipakai rumus berikutnya harus sudah dihitung lebih dulu di baris atasnya.',
+            'Satu lagi yang sering terlupa: halaman laporannya. Buat file baru dengan nama laporan, lalu isi dengan tabel yang ada di layar. Isinya cuma satu baris tabel yang diulang sebanyak data yang tersimpan. Nama variabel di pengulangan itu harus sama dengan yang tadi kamu kirim dari controller.',
         ];
     }
 

@@ -6,6 +6,7 @@ use App\Enums\Framework;
 use App\Guides\ProblemFacts;
 use App\Guides\StepCard;
 use App\Guides\View\FormCode;
+use App\Guides\View\ReportCode;
 use App\Guides\View\ScriptCode;
 
 class CodingCards
@@ -19,6 +20,7 @@ class CodingCards
             self::formSkeleton($framework, $facts),
             self::pilih($facts),
             self::hitung($facts),
+            self::laporan($framework, $facts),
         ];
     }
 
@@ -58,6 +60,21 @@ class CodingCards
             ScriptCode::hitung($facts),
             'javascript',
             'Urutan barisnya penting. Nilai yang dipakai rumus berikutnya harus sudah dihitung lebih dulu di baris atasnya.',
+        );
+    }
+
+    private static function laporan(Framework $framework, ProblemFacts $facts): StepCard
+    {
+        $path = $framework === Framework::LaravelBlade
+            ? 'resources/views/laporan.blade.php'
+            : 'app/Views/laporan.php';
+
+        return new StepCard(
+            'Buat halaman laporannya',
+            'Tombol Laporan tadi mengarah ke alamat yang halamannya belum ada. Buat file baru bernama '.$path.', lalu isi dengan ini. Isinya cuma satu tabel yang diulang sebanyak data yang tersimpan.',
+            ReportCode::build($framework, $facts),
+            $framework === Framework::LaravelBlade ? 'blade' : 'php',
+            'Nama variabel di dalam pengulangan harus sama dengan yang dikirim controller tadi. Beda nama, muncul pesan undefined variable. Di latihan ini editornya cuma menyediakan file form, jadi kode laporan ini tidak perlu kamu ketik ulang, cukup polanya kamu ingat.',
         );
     }
 }

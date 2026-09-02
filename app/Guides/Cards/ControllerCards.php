@@ -18,7 +18,8 @@ class ControllerCards
         return [
             self::createFile($laravel, $facts),
             self::importModel($laravel, $facts),
-            self::storeMethod($laravel, $facts),
+            self::simpanMethod($laravel, $facts),
+            self::laporanMethod($laravel, $facts),
         ];
     }
 
@@ -46,26 +47,24 @@ class ControllerCards
         );
     }
 
-    private static function storeMethod(bool $laravel, ProblemFacts $facts): StepCard
+    private static function simpanMethod(bool $laravel, ProblemFacts $facts): StepCard
     {
         return new StepCard(
             'Isi method penyimpannya',
             $laravel
-                ? 'Hapus tanda // di dalam class, ganti dengan method ini. Inilah yang jalan saat tombol Simpan ditekan: ambil semua isian form kecuali token, lalu masukkan ke tabel.'
+                ? 'Hapus tanda // di dalam class, ganti dengan method ini. Cuma satu baris isinya: ambil semua isian form, langsung simpan. Inilah yang jalan saat tombol Simpan ditekan.'
                 : 'Di dalam class sudah ada method index bawaan yang badannya cuma tanda //. Biarkan saja, jangan dihapus dan jangan diisi. Tambahkan method baru ini di bawahnya, setelah kurung kurawal penutup method index.',
             $laravel
                 ? implode("\n", [
-                    '    public function store(Request $request)',
+                    '    public function simpan(Request $request)',
                     '    {',
-                    '        $model = new '.$facts->modelClass().'();',
-                    "        \$data = \$request->except(['_token']);",
-                    '        $model->insert($data);',
+                    '        '.$facts->modelClass().'::create($request->all());',
                     '',
                     "        return redirect('/');",
                     '    }',
                 ])
                 : implode("\n", [
-                    '    public function store()',
+                    '    public function simpan()',
                     '    {',
                     '        $model = new '.$facts->modelClass().'();',
                     '        $model->insert($this->request->getPost());',
@@ -75,8 +74,36 @@ class ControllerCards
                 ]),
             'php',
             $laravel
-                ? 'Token itu penanda keamanan yang ikut terkirim dari form, bukan kolom tabel. Kalau tidak dibuang, penyimpanan gagal karena kolomnya tidak ada.'
+                ? 'create hanya menyimpan kolom yang kamu sebut di fillable pada model tadi, jadi token keamanan dari form ikut terbuang sendiri. Kalau ada kolom kosong padahal formnya terisi, periksa fillable, bukan formnya.'
                 : 'Nama kolom di form harus sama persis dengan nama kolom tabel, kalau tidak datanya tidak masuk.',
+        );
+    }
+
+    private static function laporanMethod(bool $laravel, ProblemFacts $facts): StepCard
+    {
+        return new StepCard(
+            'Tambahkan method laporannya',
+            'Tombol Laporan di form mengarah ke halaman lain yang isinya daftar semua data. Tambahkan method kedua ini di bawah method simpan tadi, masih di file yang sama.',
+            $laravel
+                ? implode("\n", [
+                    '    public function laporan()',
+                    '    {',
+                    '        $'.$facts->table.' = '.$facts->modelClass().'::all();',
+                    '',
+                    "        return view('laporan', compact('".$facts->table."'));",
+                    '    }',
+                ])
+                : implode("\n", [
+                    '    public function laporan()',
+                    '    {',
+                    '        $model = new '.$facts->modelClass().'();',
+                    '        $'.$facts->table.' = $model->findAll();',
+                    '',
+                    "        return view('laporan', compact('".$facts->table."'));",
+                    '    }',
+                ]),
+            'php',
+            'Nama di dalam compact harus sama dengan nama variabel di barisnya, tanpa tanda dolar. Nama itu juga yang nanti kamu pakai di halaman laporan.',
         );
     }
 }

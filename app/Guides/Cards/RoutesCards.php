@@ -40,14 +40,18 @@ class RoutesCards
 
     private static function writeRoutes(Framework $framework, ProblemFacts $facts): StepCard
     {
+        $laravel = $framework === Framework::LaravelBlade;
+
         return new StepCard(
-            'Tambahkan satu alamat untuk tombol Simpan',
-            'Tulis dua baris ini. Baris use ditaruh di bagian atas bersama use yang sudah ada, baris route ditaruh di bawah route bawaan tadi.',
-            $framework === Framework::LaravelBlade
+            'Tambahkan alamat untuk Simpan dan Laporan',
+            $laravel
+                ? 'Tulis baris ini. Baris use ditaruh di bagian atas bersama use yang sudah ada, dua baris route ditaruh di bawah route bawaan tadi.'
+                : 'Tulis dua baris ini tepat di bawah route bawaan tadi.',
+            $laravel
                 ? self::laravelRoutes($facts)
                 : self::ci4Routes($facts),
             'php',
-            'Perhatikan kata post, bukan get. Alamat ini harus sama persis dengan yang kamu tulis di bagian action pada form.',
+            'Perhatikan bedanya: simpan pakai post karena mengirim data, laporan pakai get karena cuma membuka halaman. Alamat simpan harus sama persis dengan yang kamu tulis di bagian action pada form.',
         );
     }
 
@@ -71,12 +75,18 @@ class RoutesCards
         return implode("\n", [
             'use App\Http\Controllers\\'.$controller.';',
             '',
-            "Route::post('/simpan', [".$controller."::class, 'store']);",
+            "Route::post('/simpan', [".$controller."::class, 'simpan']);",
+            "Route::get('/laporan', [".$controller."::class, 'laporan']);",
         ]);
     }
 
     private static function ci4Routes(ProblemFacts $facts): string
     {
-        return "\$routes->post('/simpan', '".$facts->controllerClass()."::store');";
+        $controller = $facts->controllerClass();
+
+        return implode("\n", [
+            "\$routes->post('/simpan', '".$controller."::simpan');",
+            "\$routes->get('/laporan', '".$controller."::laporan');",
+        ]);
     }
 }
