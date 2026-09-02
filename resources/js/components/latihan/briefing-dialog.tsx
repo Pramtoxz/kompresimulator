@@ -17,9 +17,15 @@ type Props = {
     briefing: Briefing;
     audio: string[];
     attemptId: number;
+    stepKey: string;
 };
 
-export default function BriefingDialog({ briefing, audio, attemptId }: Props) {
+export default function BriefingDialog({
+    briefing,
+    audio,
+    attemptId,
+    stepKey,
+}: Props) {
     const [open, setOpen] = useState(false);
     const narration = useNarration();
     const startTour = useTour();
@@ -45,7 +51,7 @@ export default function BriefingDialog({ briefing, audio, attemptId }: Props) {
         }
 
         setOpen(false);
-        window.setTimeout(() => startTour('tur-latihan'), 350);
+        window.setTimeout(() => startTour(stepKey), 350);
     };
 
     const change = (next: boolean) => {

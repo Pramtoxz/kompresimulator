@@ -57,7 +57,7 @@ export default function StepWorkbench({
             )}
 
             {stepKey === 'migration' && (
-                <section className="space-y-3">
+                <section className="space-y-3" data-tour="tabel">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h2 className="text-base font-medium">Tabel latihan</h2>
                         <Button
@@ -84,7 +84,7 @@ export default function StepWorkbench({
 
             {stepKey === 'coding' && (
                 <>
-                    <section className="space-y-2">
+                    <section className="space-y-2" data-tour="pratinjau">
                         <h2 className="text-base font-medium">Pratinjau</h2>
                         <PreviewFrame
                             ref={previewRef}
@@ -93,7 +93,7 @@ export default function StepWorkbench({
                         />
                     </section>
 
-                    <section className="space-y-2">
+                    <section className="space-y-2" data-tour="data">
                         <h2 className="text-base font-medium">
                             Data tersimpan
                         </h2>
@@ -101,7 +101,7 @@ export default function StepWorkbench({
                     </section>
 
                     {!guided && (
-                        <section className="space-y-3">
+                        <section className="space-y-3" data-tour="cek">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <h2 className="text-base font-medium">
                                     Hasil pengecekan

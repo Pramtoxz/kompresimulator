@@ -1,6 +1,8 @@
 import { Form } from '@inertiajs/react';
+import { Compass } from 'lucide-react';
 import WorkspaceController from '@/actions/App/Http/Controllers/Student/WorkspaceController';
 import { Button } from '@/components/ui/button';
+import useTour from '@/hooks/use-tour';
 import type { Briefing, WorkspaceGuide } from '@/types/latihan';
 import BriefingDialog from './briefing-dialog';
 import StepCards from './step-cards';
@@ -20,6 +22,8 @@ export default function StepInstruction({
     attemptId,
     guided,
 }: Props) {
+    const startTour = useTour();
+
     if (guide === null) {
         return null;
     }
@@ -29,15 +33,29 @@ export default function StepInstruction({
     return (
         <section className="space-y-4" data-tour="instruksi">
             <div className="space-y-2">
-                <h1 className="text-xl font-semibold tracking-tight">
-                    Langkah {guide.step_no} — {guide.label}
-                </h1>
+                <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+                    <h1 className="text-xl font-semibold tracking-tight">
+                        Langkah {guide.step_no} — {guide.label}
+                    </h1>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => startTour(guide.step_key, true)}
+                        className="h-9 shrink-0"
+                    >
+                        <Compass />
+                        Panduan
+                    </Button>
+                </div>
 
                 {briefing && (
                     <BriefingDialog
                         briefing={briefing}
                         audio={briefingAudio}
                         attemptId={attemptId}
+                        stepKey={guide.step_key}
                     />
                 )}
             </div>

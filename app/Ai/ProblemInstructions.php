@@ -8,7 +8,7 @@ use App\Enums\StepKey;
 
 class ProblemInstructions
 {
-    public const VERSION = 'v5';
+    public const VERSION = 'v6';
 
     public static function for(Framework $framework): string
     {
@@ -67,13 +67,18 @@ class ProblemInstructions
     /**
      * @param  array<int, string>  $avoid
      */
-    public static function promptFor(string $thesisTitle, Framework $framework, Level $level, array $avoid = []): string
-    {
+    public static function promptFor(
+        string $thesisTitle,
+        Framework $framework,
+        Level $level,
+        ProblemVariation $variation,
+        array $avoid = [],
+    ): string {
         $parts = [
             'Judul skripsi mahasiswa: "'.$thesisTitle.'".',
             'Framework: '.$framework->label().'.',
             self::levelSpec($level),
-            'Pola hitung yang wajib dipakai kali ini: '.self::pattern($level).'. Jangan memakai pola lain.',
+            $variation->toPrompt(),
         ];
 
         if ($avoid !== []) {
@@ -107,30 +112,5 @@ class ProblemInstructions
                 'Buat tiga aturan hitung, satu di antaranya bertingkat dengan tiga kemungkinan nilai.',
             ],
         }, $shared]);
-    }
-
-    private static function pattern(Level $level): string
-    {
-        $patterns = match ($level) {
-            Level::Awal => [
-                'total dari harga satuan dikali jumlah',
-                'total dari harga satuan dikali lama pemakaian',
-                'total dari harga satuan ditambah satu biaya tetap',
-            ],
-            Level::Menengah => [
-                'potongan persen bila jumlah melewati batas tertentu, lalu total',
-                'denda per hari bila melewati batas waktu, lalu total',
-                'biaya tambahan per unit di atas kuota gratis, lalu total',
-                'pajak persen dari subtotal, lalu total',
-            ],
-            Level::Akhir => [
-                'potongan bertingkat menurut tiga rentang jumlah, lalu subtotal, lalu total',
-                'harga bertingkat menurut tiga rentang lama pemakaian, lalu potongan, lalu total',
-                'denda bertingkat menurut tiga rentang keterlambatan, lalu subtotal, lalu total',
-                'uang muka persen, lalu potongan bila memenuhi syarat, lalu sisa bayar',
-            ],
-        };
-
-        return $patterns[array_rand($patterns)];
     }
 }

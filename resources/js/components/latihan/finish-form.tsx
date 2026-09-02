@@ -12,7 +12,7 @@ export default function FinishForm({ attemptId }: { attemptId: number }) {
     const [source, setSource] = useState<'timer' | 'manual'>('timer');
 
     return (
-        <Card>
+        <Card data-tour="selesai">
             <CardHeader>
                 <CardTitle className="text-base">Tandai selesai</CardTitle>
             </CardHeader>

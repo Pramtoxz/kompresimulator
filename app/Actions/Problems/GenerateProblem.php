@@ -5,8 +5,10 @@ namespace App\Actions\Problems;
 use App\Actions\Ai\RecordAiRequest;
 use App\Ai\Agents\ProblemGeneratorAgent;
 use App\Ai\ProblemInstructions;
+use App\Ai\ProblemVariation;
 use App\Enums\ProblemStatus;
 use App\Models\Problem;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 use Throwable;
 
@@ -22,11 +24,21 @@ class GenerateProblem
     public function handle(Problem $problem): Problem
     {
         $user = $problem->user;
+        $earlier = $this->earlier($problem);
+
         $prompt = ProblemInstructions::promptFor(
             $problem->thesis_title_snapshot,
             $problem->framework,
             $problem->level,
-            $this->earlierProblems($problem),
+            ProblemVariation::make(
+                $problem->level,
+                $this->sequence($problem),
+                $this->forbiddenNames($earlier),
+            ),
+            $earlier->map(fn (Problem $item) => $this->summarize($item))
+                ->filter()
+                ->values()
+                ->all(),
         );
         $payload = ['prompt' => $prompt, 'framework' => $problem->framework->value, 'level' => $problem->level->value];
 
@@ -92,9 +104,9 @@ class GenerateProblem
     }
 
     /**
-     * @return array<int, string>
+     * @return Collection<int, Problem>
      */
-    private function earlierProblems(Problem $problem): array
+    private function earlier(Problem $problem): Collection
     {
         return Problem::query()
             ->where('user_id', $problem->user_id)
@@ -102,11 +114,38 @@ class GenerateProblem
             ->where('status', ProblemStatus::Ready)
             ->latest('id')
             ->limit(5)
-            ->get()
-            ->map(fn (Problem $earlier) => $this->summarize($earlier))
-            ->filter()
-            ->values()
-            ->all();
+            ->get();
+    }
+
+    private function sequence(Problem $problem): int
+    {
+        return Problem::query()
+            ->where('user_id', $problem->user_id)
+            ->where('level', $problem->level)
+            ->whereKeyNot($problem->getKey())
+            ->count();
+    }
+
+    /**
+     * @param  Collection<int, Problem>  $earlier
+     * @return array<int, string>
+     */
+    private function forbiddenNames(Collection $earlier): array
+    {
+        $names = [];
+
+        foreach ($earlier as $problem) {
+            $lookup = $problem->lookup;
+            $rows = is_array($lookup) && is_array($lookup['rows'] ?? null) ? $lookup['rows'] : [];
+
+            foreach ($rows as $row) {
+                if (is_array($row) && is_string($row[0] ?? null)) {
+                    $names[] = $row[0];
+                }
+            }
+        }
+
+        return array_slice(array_unique($names), 0, 12);
     }
 
     private function summarize(Problem $earlier): string
