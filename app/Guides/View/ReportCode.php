@@ -13,44 +13,32 @@ class ReportCode
         $names = self::names($facts);
 
         $lines = [
-            '<!DOCTYPE html>',
-            '<html lang="id">',
-            '',
-            '<head>',
-            '    <meta charset="UTF-8">',
-            '    <title>Laporan</title>',
-            '</head>',
-            '',
-            '<body>',
-            '    <h1>Laporan</h1>',
-            '    <table border="1">',
-            '        <tr>',
+            '<h1>Laporan</h1>',
+            '<table border="1">',
+            '    <tr>',
         ];
 
         foreach ($names as $name) {
-            $lines[] = '            <th>'.$facts->labelFor($name).'</th>';
+            $lines[] = '        <th>'.$facts->labelFor($name).'</th>';
         }
 
-        $lines[] = '        </tr>';
+        $lines[] = '    </tr>';
         $lines[] = $laravel
-            ? '        @foreach ($'.$facts->table.' as $baris)'
-            : '        <?php foreach ($'.$facts->table.' as $baris): ?>';
-        $lines[] = '        <tr>';
+            ? '    @foreach ($'.$facts->table.' as $baris)'
+            : '    <?php foreach ($'.$facts->table.' as $baris): ?>';
+        $lines[] = '    <tr>';
 
         foreach ($names as $name) {
             $lines[] = $laravel
-                ? '            <td>{{ $baris->'.$name.' }}</td>'
-                : '            <td><?= $baris['."'".$name."'".'] ?></td>';
+                ? '        <td>{{ $baris->'.$name.' }}</td>'
+                : '        <td><?= $baris['."'".$name."'".'] ?></td>';
         }
 
-        $lines[] = '        </tr>';
+        $lines[] = '    </tr>';
         $lines[] = $laravel
-            ? '        @endforeach'
-            : '        <?php endforeach; ?>';
-        $lines[] = '    </table>';
-        $lines[] = '</body>';
-        $lines[] = '';
-        $lines[] = '</html>';
+            ? '    @endforeach'
+            : '    <?php endforeach; ?>';
+        $lines[] = '</table>';
 
         return implode("\n", $lines);
     }

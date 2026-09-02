@@ -64,7 +64,7 @@ class SharedScript
     {
         return [
             'Sekarang bagian yang paling banyak diketik. Buka file tampilan bawaannya, blok semua isinya, hapus, lalu ganti dengan form yang ada di layar. Urutan fieldnya ikuti soal dari atas ke bawah, jangan diacak. Yang paling penting, isi name pada tiap input harus sama persis dengan nama kolom di tabel.',
-            'Tambahkan tag script tepat sebelum penutup body, lalu tulis fungsi pertama. Fungsi ini jalan tiap dropdown diganti, tugasnya mengisi sendiri field yang nilainya mengikuti pilihan. Tulis angkanya apa adanya tanpa titik pemisah ribuan, karena titik itu akan dibaca sebagai angka desimal.',
+            'Tambahkan tag script di bawah form tadi, lalu tulis fungsi pertama. Fungsi ini jalan tiap dropdown diganti, tugasnya mengisi sendiri field yang nilainya mengikuti pilihan. Tulis angkanya apa adanya tanpa titik pemisah ribuan, karena titik itu akan dibaca sebagai angka desimal.',
             'Masih di dalam tag script yang sama, tambahkan fungsi kedua di bawah fungsi tadi. Fungsi ini jalan tiap angka diketik, tugasnya menghitung lalu mengisi field hasil. Urutan barisnya penting, karena nilai yang dipakai rumus berikutnya harus sudah dihitung lebih dulu di baris atasnya.',
             'Satu lagi yang sering terlupa: halaman laporannya. Buat file baru dengan nama laporan, lalu isi dengan tabel yang ada di layar. Isinya cuma satu baris tabel yang diulang sebanyak data yang tersimpan. Nama variabel di pengulangan itu harus sama dengan yang tadi kamu kirim dari controller.',
         ];

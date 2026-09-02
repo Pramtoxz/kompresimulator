@@ -118,7 +118,7 @@ class ProblemSchema
                 ->description('Nilai field terakhir pada calc_rules, dihitung benar menurut aturan dan tabel acuan')
                 ->required(),
         ]))
-            ->description('Tiga test case. Minimal satu memicu aturan bersyarat')
+            ->description('Tiga test case. Bila soal memakai aturan bersyarat, minimal satu test case memicu syarat itu')
             ->required();
     }
 

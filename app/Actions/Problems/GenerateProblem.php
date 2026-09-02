@@ -22,7 +22,7 @@ class GenerateProblem
     public function handle(Problem $problem): Problem
     {
         $user = $problem->user;
-        $prompt = ProblemInstructions::promptFor($problem->thesis_title_snapshot, $problem->framework);
+        $prompt = ProblemInstructions::promptFor($problem->thesis_title_snapshot, $problem->framework, $problem->level);
         $payload = ['prompt' => $prompt, 'framework' => $problem->framework->value, 'level' => $problem->level->value];
 
         $startedAt = microtime(true);

@@ -45,7 +45,7 @@ class CodingCards
     {
         return new StepCard(
             'Fungsi pertama: mengisi otomatis dari dropdown',
-            'Tambahkan tag script tepat sebelum penutup body, lalu tulis fungsi ini di dalamnya. Fungsi ini jalan tiap dropdown diganti, tugasnya mengisi field yang nilainya mengikuti pilihan.',
+            'Tambahkan tag script di bawah form tadi, lalu tulis fungsi ini di dalamnya. Fungsi ini jalan tiap dropdown diganti, tugasnya mengisi field yang nilainya mengikuti pilihan.',
             "<script>\n".ScriptCode::pilih($facts)."\n</script>",
             'javascript',
             'Angka ditulis apa adanya tanpa titik pemisah ribuan. Menulis 150.000 akan dibaca JavaScript sebagai angka lain.',

@@ -12,29 +12,19 @@ class FormCode
         $laravel = $framework === Framework::LaravelBlade;
 
         $open = $laravel
-            ? '    <form action="{{ url(\'/simpan\') }}" method="POST">'
-            : '    <form action="/simpan" method="POST">';
+            ? '<form action="{{ url(\'/simpan\') }}" method="POST">'
+            : '<form action="/simpan" method="POST">';
 
         $lines = [
-            '<!DOCTYPE html>',
-            '<html lang="id">',
-            '',
-            '<head>',
-            '    <meta charset="UTF-8">',
-            '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-            '    <title>Form Input</title>',
-            '</head>',
-            '',
-            '<body>',
-            '    <h1>Form Input</h1>',
+            '<h1>Form Input</h1>',
             $open,
         ];
 
         if ($laravel) {
-            $lines[] = '        @csrf';
+            $lines[] = '    @csrf';
         }
 
-        $lines[] = '        <table>';
+        $lines[] = '    <table>';
 
         foreach (self::rows($facts) as $row) {
             $lines[] = $row;
@@ -44,11 +34,8 @@ class FormCode
             $lines[] = $button;
         }
 
-        $lines[] = '        </table>';
-        $lines[] = '    </form>';
-        $lines[] = '</body>';
-        $lines[] = '';
-        $lines[] = '</html>';
+        $lines[] = '    </table>';
+        $lines[] = '</form>';
 
         return implode("\n", $lines);
     }
@@ -67,10 +54,10 @@ class FormCode
                 continue;
             }
 
-            $rows[] = '            <tr>';
-            $rows[] = '                <td>'.$facts->labelFor($name).'</td>';
-            $rows[] = '                <td>'.self::input($facts, $name, is_string($field['input'] ?? null) ? $field['input'] : 'text').'</td>';
-            $rows[] = '            </tr>';
+            $rows[] = '        <tr>';
+            $rows[] = '            <td>'.$facts->labelFor($name).'</td>';
+            $rows[] = '            <td>'.self::input($facts, $name, is_string($field['input'] ?? null) ? $field['input'] : 'text').'</td>';
+            $rows[] = '        </tr>';
         }
 
         return $rows;
@@ -82,12 +69,12 @@ class FormCode
     private static function buttons(): array
     {
         return [
-            '            <tr>',
-            '                <td>',
-            '                    <button type="submit">Simpan Data</button>',
-            '                    <button type="button" onclick="location.href=\'/laporan\'">Laporan</button>',
-            '                </td>',
-            '            </tr>',
+            '        <tr>',
+            '            <td>',
+            '                <button type="submit">Simpan Data</button>',
+            '                <button type="button" onclick="location.href=\'/laporan\'">Laporan</button>',
+            '            </td>',
+            '        </tr>',
         ];
     }
 
@@ -98,7 +85,7 @@ class FormCode
         if ($input === 'select') {
             return '<select '.$attributes.' onchange="PilihData()">'."\n"
                 .self::options($facts)."\n"
-                .'                </select>';
+                .'            </select>';
         }
 
         return match ($input) {
@@ -114,14 +101,14 @@ class FormCode
         $keyIndex = LookupData::keyIndex($facts);
 
         if ($keyIndex === null) {
-            return '                    <option value="">-</option>';
+            return '                <option value="">-</option>';
         }
 
         $options = [];
 
         foreach (LookupData::rows($facts) as $row) {
             $value = (string) ($row[$keyIndex] ?? '');
-            $options[] = '                    <option value="'.$value.'">'.$value.'</option>';
+            $options[] = '                <option value="'.$value.'">'.$value.'</option>';
         }
 
         return implode("\n", $options);
