@@ -64,6 +64,7 @@ export default function AttemptShow({ attempt, problem }: Props) {
                 problem={problem}
                 label="Langkah selesai"
                 isLastStep={isLastStep}
+                canGoBack={attempt.current_step > 1}
                 showSoal={false}
             />
         </>

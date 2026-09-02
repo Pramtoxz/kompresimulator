@@ -8,7 +8,7 @@ use App\Enums\StepKey;
 
 class ProblemInstructions
 {
-    public const VERSION = 'v4';
+    public const VERSION = 'v5';
 
     public static function for(Framework $framework): string
     {
@@ -24,7 +24,8 @@ class ProblemInstructions
             self::frameworkNotes($framework),
             "Panduan wajib berisi tepat tujuh langkah dengan step_key berikut, berurutan:\n".$steps,
             'Panduan ditulis untuk orang yang baru pertama kali menyentuh framework. Sebutkan nama berkas dan letaknya, lalu kode utuh yang bisa langsung diketik ulang. Hindari istilah yang tidak dijelaskan.',
-            'Seluruh label, nama field, nama kolom, dan nama tabel ditulis dalam bahasa Indonesia. Nama field memakai huruf kecil semua dan digabung tanpa spasi maupun garis bawah, misalnya namapelanggan, namamobil, hargasewa, lamasewa, potongan, totalbayar, sisabayar. Dilarang memakai garis bawah seperti nama_pelanggan, dan dilarang memakai bahasa Inggris seperti customername atau totalprice. Nama tabel juga satu kata huruf kecil tanpa garis bawah, misalnya sewa atau pemesanan.',
+            'Seluruh label, nama field, nama kolom, dan nama tabel ditulis dalam bahasa Indonesia. Nama field memakai huruf kecil semua dan digabung tanpa spasi maupun garis bawah, bentuknya seperti namapelanggan, jumlahitem, totalbayar. Dilarang memakai garis bawah seperti nama_pelanggan, dan dilarang memakai bahasa Inggris seperti customername atau totalprice. Nama tabel juga satu kata huruf kecil tanpa garis bawah.',
+            'Setiap contoh di dalam instruksi ini hanya memperagakan bentuk penulisan, bukan bahan yang boleh disalin. Nama field, isi tabel acuan, seluruh angka, dan tema soal wajib diturunkan dari judul skripsi mahasiswa. Dilarang memakai angka atau nama benda yang muncul di contoh mana pun pada instruksi ini.',
         ]);
     }
 
@@ -33,11 +34,11 @@ class ProblemInstructions
         return implode("\n", [
             'Bentuk soal yang wajib diikuti:',
             '1. Satu form input dengan enam sampai delapan field berlabel bahasa Indonesia.',
-            '2. Satu field bertipe select yang menjadi kunci, misalnya Kode Paket atau Nama Paket. Memilih nilai di field ini mengisi otomatis field turunannya seperti harga.',
-            '3. Beberapa field readonly yang terisi otomatis dari hasil hitungan, misalnya Potongan, Total, atau Sisa Bayar.',
+            '2. Satu field bertipe select yang menjadi kunci tabel acuan. Memilih nilai di field ini mengisi otomatis field turunannya seperti harga atau tarif.',
+            '3. Field readonly yang terisi otomatis dari hasil hitungan.',
             '4. Dua tombol tetap: Simpan dan Laporan.',
-            '5. Satu tabel acuan berisi minimal tiga baris, misalnya avanza 150000, brio 200000, fortuner 300000.',
-            '6. Aturan hitung yang ditulis polos, misalnya: jika lamasewa lebih dari 3 maka potongan 10 persen dari hargasewa, selain itu 0. Totalbayar sama dengan hargasewa dikali lamasewa dikurangi potongan. Banyaknya aturan dan boleh tidaknya memakai syarat ditentukan tingkat kesulitan yang diminta.',
+            '5. Satu tabel acuan berisi tiga sampai lima baris. Isi barisnya diturunkan dari judul skripsi.',
+            '6. Aturan hitung ditulis polos dalam bahasa Indonesia, memakai kata jika dan selain itu bila memang bersyarat. Banyaknya aturan, jumlah field, dan bentuknya ditentukan tingkat kesulitan serta pola hitung yang diminta.',
         ]);
     }
 
@@ -63,16 +64,26 @@ class ProblemInstructions
         };
     }
 
-    public static function promptFor(string $thesisTitle, Framework $framework, Level $level): string
+    /**
+     * @param  array<int, string>  $avoid
+     */
+    public static function promptFor(string $thesisTitle, Framework $framework, Level $level, array $avoid = []): string
     {
-        return implode("\n\n", [
+        $parts = [
             'Judul skripsi mahasiswa: "'.$thesisTitle.'".',
             'Framework: '.$framework->label().'.',
             self::levelSpec($level),
             'Pola hitung yang wajib dipakai kali ini: '.self::pattern($level).'. Jangan memakai pola lain.',
-            'Susun satu soal ujian mengikuti format kertas soal dosen, dengan tabel acuan dan aturan hitung yang konsepnya mengikuti judul skripsi tersebut.',
-            'Angka pada tabel acuan dan test case harus konsisten satu sama lain.',
-        ]);
+        ];
+
+        if ($avoid !== []) {
+            $parts[] = "Mahasiswa ini sudah pernah mendapat soal berikut. Soal baru wajib berbeda dari semuanya: beda isi tabel acuan, beda angka, dan beda aturan hitung. Kalau temanya terpaksa sama karena mengikuti judul skripsi, ganti sudut pandangnya.\n- ".implode("\n- ", $avoid);
+        }
+
+        $parts[] = 'Susun satu soal ujian mengikuti format kertas soal dosen, dengan tabel acuan dan aturan hitung yang konsepnya mengikuti judul skripsi tersebut.';
+        $parts[] = 'Angka pada tabel acuan dan test case harus konsisten satu sama lain.';
+
+        return implode("\n\n", $parts);
     }
 
     private static function levelSpec(Level $level): string

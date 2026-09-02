@@ -27,7 +27,7 @@ export default function StepInstruction({
     const canReveal = !guided && !guide.revealed && guide.has_example_code;
 
     return (
-        <section className="space-y-4">
+        <section className="space-y-4" data-tour="instruksi">
             <div className="space-y-2">
                 <h1 className="text-xl font-semibold tracking-tight">
                     Langkah {guide.step_no} — {guide.label}

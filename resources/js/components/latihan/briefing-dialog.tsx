@@ -9,6 +9,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import useNarration from '@/hooks/use-narration';
+import useTour from '@/hooks/use-tour';
 import type { Briefing } from '@/types/latihan';
 import TypePrimer from './type-primer';
 
@@ -18,13 +19,10 @@ type Props = {
     attemptId: number;
 };
 
-export default function BriefingDialog({
-    briefing,
-    audio,
-    attemptId,
-}: Props) {
+export default function BriefingDialog({ briefing, audio, attemptId }: Props) {
     const [open, setOpen] = useState(false);
     const narration = useNarration();
+    const startTour = useTour();
     const storageKey = `briefing-${attemptId}`;
 
     useEffect(() => {
@@ -47,10 +45,11 @@ export default function BriefingDialog({
         }
 
         setOpen(false);
+        window.setTimeout(() => startTour('tur-latihan'), 350);
     };
 
     const change = (next: boolean) => {
-        if (! next) {
+        if (!next) {
             narration.stop();
         }
 

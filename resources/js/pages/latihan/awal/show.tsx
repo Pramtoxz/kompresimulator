@@ -51,12 +51,15 @@ export default function WorkspaceShow({
     const previewRef = useRef<PreviewHandle>(null);
 
     const step = useMemo(
-        () => attempt.steps.find((item) => item.step_no === attempt.current_step),
+        () =>
+            attempt.steps.find((item) => item.step_no === attempt.current_step),
         [attempt.steps, attempt.current_step],
     );
 
     const guide = useMemo(
-        () => guides.find((item) => item.step_no === attempt.current_step) ?? null,
+        () =>
+            guides.find((item) => item.step_no === attempt.current_step) ??
+            null,
         [guides, attempt.current_step],
     );
 
@@ -130,7 +133,9 @@ export default function WorkspaceShow({
 
     return (
         <>
-            <Head title={`Langkah ${attempt.current_step} — ${problem.title ?? 'Latihan'}`} />
+            <Head
+                title={`Langkah ${attempt.current_step} — ${problem.title ?? 'Latihan'}`}
+            />
 
             <DrillHeader
                 steps={attempt.steps}
@@ -173,6 +178,7 @@ export default function WorkspaceShow({
                 problem={problem}
                 label="Langkah selesai"
                 isLastStep={isLastStep}
+                canGoBack={attempt.current_step > 1}
             />
         </>
     );

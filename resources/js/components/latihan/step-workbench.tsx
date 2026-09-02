@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { faseFor } from '@/lib/fase';
 import type {
     WorkspaceCheck,
     WorkspaceDatabase,
@@ -51,6 +52,7 @@ export default function StepWorkbench({
                     path={file.path}
                     content={file.content}
                     onSave={onSaveFile}
+                    fase={faseFor(stepKey)}
                 />
             )}
 
@@ -92,7 +94,9 @@ export default function StepWorkbench({
                     </section>
 
                     <section className="space-y-2">
-                        <h2 className="text-base font-medium">Data tersimpan</h2>
+                        <h2 className="text-base font-medium">
+                            Data tersimpan
+                        </h2>
                         <DatabasePreview database={database} />
                     </section>
 

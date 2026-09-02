@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 type Props = {
     value: string;
     onSave: (content: string) => void;
+    onDirty: () => void;
+    accent: string;
 };
 
-export default function CodeEditor({ value, onSave }: Props) {
+export default function CodeEditor({ value, onSave, onDirty, accent }: Props) {
     const [content, setContent] = useState(value);
     const textarea = useRef<HTMLTextAreaElement>(null);
 
@@ -13,7 +15,19 @@ export default function CodeEditor({ value, onSave }: Props) {
         setContent(value);
     }, [value]);
 
-    const handleTab = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const change = (next: string) => {
+        setContent(next);
+        onDirty();
+    };
+
+    const handleKey = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+            event.preventDefault();
+            onSave(content);
+
+            return;
+        }
+
         if (event.key !== 'Tab') {
             return;
         }
@@ -25,7 +39,7 @@ export default function CodeEditor({ value, onSave }: Props) {
         const end = element.selectionEnd;
         const next = `${content.slice(0, start)}    ${content.slice(end)}`;
 
-        setContent(next);
+        change(next);
 
         window.requestAnimationFrame(() => {
             element.selectionStart = start + 4;
@@ -37,16 +51,17 @@ export default function CodeEditor({ value, onSave }: Props) {
         <textarea
             ref={textarea}
             value={content}
-            onChange={(event) => setContent(event.target.value)}
+            onChange={(event) => change(event.target.value)}
             onBlur={() => onSave(content)}
-            onKeyDown={handleTab}
+            onKeyDown={handleKey}
             spellCheck={false}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
             data-gramm="false"
+            placeholder="Ketik kodemu di sini"
             aria-label="Editor kode"
-            className="bg-muted/40 h-[26rem] w-full resize-none rounded-lg border p-3 font-mono text-[13px] leading-relaxed focus-visible:ring-1 focus-visible:outline-none"
+            className={`bg-card placeholder:text-muted-foreground/70 h-[26rem] w-full resize-none rounded-lg border-2 p-3 font-mono text-[13px] leading-relaxed shadow-inner transition-colors outline-none placeholder:font-sans ${accent}`}
         />
     );
 }

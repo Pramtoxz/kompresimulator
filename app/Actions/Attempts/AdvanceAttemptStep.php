@@ -31,8 +31,8 @@ class AdvanceAttemptStep
             }
 
             $next->update([
-                'status' => StepStatus::InProgress,
-                'started_at' => now(),
+                'status' => $next->status === StepStatus::Done ? StepStatus::Done : StepStatus::InProgress,
+                'started_at' => $next->started_at ?? now(),
             ]);
 
             $attempt->update(['current_step' => $next->step_no]);
@@ -43,6 +43,10 @@ class AdvanceAttemptStep
 
     private function complete(AttemptStep $step): void
     {
+        if ($step->status === StepStatus::Done) {
+            return;
+        }
+
         $step->update([
             'status' => StepStatus::Done,
             'completed_at' => now(),

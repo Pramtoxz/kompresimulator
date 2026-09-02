@@ -10,17 +10,17 @@ import {
 } from '@/components/ui/sheet';
 import type { PracticeProblem } from '@/types/latihan';
 
-export default function SoalSheet({
-    problem,
-}: {
-    problem: PracticeProblem;
-}) {
+export default function SoalSheet({ problem }: { problem: PracticeProblem }) {
     const [open, setOpen] = useState(false);
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button variant="outline" className="h-12 flex-1 sm:flex-none">
+                <Button
+                    variant="outline"
+                    className="h-12 flex-1 sm:flex-none"
+                    data-tour="soal"
+                >
                     Lihat soal
                 </Button>
             </SheetTrigger>

@@ -22,7 +22,12 @@ class GenerateProblem
     public function handle(Problem $problem): Problem
     {
         $user = $problem->user;
-        $prompt = ProblemInstructions::promptFor($problem->thesis_title_snapshot, $problem->framework, $problem->level);
+        $prompt = ProblemInstructions::promptFor(
+            $problem->thesis_title_snapshot,
+            $problem->framework,
+            $problem->level,
+            $this->earlierProblems($problem),
+        );
         $payload = ['prompt' => $prompt, 'framework' => $problem->framework->value, 'level' => $problem->level->value];
 
         $startedAt = microtime(true);
@@ -84,5 +89,38 @@ class GenerateProblem
     private function elapsed(float $startedAt): int
     {
         return (int) round((microtime(true) - $startedAt) * 1000);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function earlierProblems(Problem $problem): array
+    {
+        return Problem::query()
+            ->where('user_id', $problem->user_id)
+            ->whereKeyNot($problem->getKey())
+            ->where('status', ProblemStatus::Ready)
+            ->latest('id')
+            ->limit(5)
+            ->get()
+            ->map(fn (Problem $earlier) => $this->summarize($earlier))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function summarize(Problem $earlier): string
+    {
+        $calc = $earlier->calc_rules;
+        $rules = is_array($calc) && is_array($calc['rules'] ?? null) ? $calc['rules'] : [];
+        $descriptions = [];
+
+        foreach ($rules as $rule) {
+            if (is_array($rule) && is_string($rule['description'] ?? null)) {
+                $descriptions[] = $rule['description'];
+            }
+        }
+
+        return trim(($earlier->title ?? '').' | '.implode(' | ', $descriptions), ' |');
     }
 }

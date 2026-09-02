@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Actions\Attempts\AdvanceAttemptStep;
 use App\Actions\Attempts\FinishAttempt;
+use App\Actions\Attempts\GoBackStep;
 use App\Actions\Attempts\StartAttempt;
 use App\Enums\AttemptStatus;
 use App\Enums\Level;
@@ -52,6 +53,15 @@ class AttemptController extends Controller
         abort_unless($attempt->status === AttemptStatus::Running, 409);
 
         $advancer->handle($attempt);
+
+        return back();
+    }
+
+    public function back(Attempt $attempt, GoBackStep $stepper): RedirectResponse
+    {
+        abort_unless($attempt->status === AttemptStatus::Running, 409);
+
+        $stepper->handle($attempt);
 
         return back();
     }

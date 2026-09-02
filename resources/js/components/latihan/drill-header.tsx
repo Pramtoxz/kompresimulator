@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { faseFor } from '@/lib/fase';
 import { index } from '@/routes/latihan';
 import type { PracticeStep } from '@/types/latihan';
 import StepPips from './step-pips';
@@ -44,14 +45,22 @@ export default function DrillHeader({
     }, [startedAt, showTimer]);
 
     const overTarget = elapsed > targetMinutes * 60;
+    const active = steps.find((step) => step.step_no === currentStep);
+    const fase = faseFor(active?.step_key ?? '');
 
     return (
         <header className="border-sidebar-border/60 bg-background/95 safe-x safe-t sticky top-0 z-30 border-b backdrop-blur">
             <div className="mx-auto w-full max-w-5xl px-4 py-3 sm:px-6">
                 <div className="flex items-center justify-between gap-4">
-                    <div className="min-w-0 space-y-2">
-                        <p className="text-muted-foreground text-xs">
-                            Langkah {currentStep} dari {steps.length}
+                    <div className="min-w-0 space-y-2" data-tour="langkah">
+                        <p className="flex items-center gap-2 text-xs">
+                            <span
+                                className={`size-2 shrink-0 rounded-full ${fase.dot}`}
+                            />
+                            <span className={fase.text}>{fase.label}</span>
+                            <span className="text-muted-foreground truncate">
+                                langkah {currentStep} dari {steps.length}
+                            </span>
                         </p>
                         <StepPips steps={steps} currentStep={currentStep} />
                     </div>
