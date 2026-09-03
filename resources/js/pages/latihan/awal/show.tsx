@@ -5,6 +5,7 @@ import DrillHeader from '@/components/latihan/drill-header';
 import FinishForm from '@/components/latihan/finish-form';
 import type { PreviewHandle } from '@/components/latihan/preview-frame';
 import StepDock from '@/components/latihan/step-dock';
+import TutorChat from '@/components/latihan/tutor-chat';
 import StepInstruction from '@/components/latihan/step-instruction';
 import StepWorkbench from '@/components/latihan/step-workbench';
 import type {
@@ -31,6 +32,7 @@ type Props = {
     testCases: WorkspaceTestCase[];
     totalField: string | null;
     guided: boolean;
+    terminal: { total: number };
 };
 
 export default function WorkspaceShow({
@@ -46,6 +48,7 @@ export default function WorkspaceShow({
     testCases,
     totalField,
     guided,
+    terminal,
 }: Props) {
     const [checking, setChecking] = useState(false);
     const previewRef = useRef<PreviewHandle>(null);
@@ -155,6 +158,7 @@ export default function WorkspaceShow({
                 />
 
                 <StepWorkbench
+                    attemptId={attempt.id}
                     stepKey={step?.step_key ?? ''}
                     file={file}
                     onSaveFile={saveFile}
@@ -168,10 +172,13 @@ export default function WorkspaceShow({
                     checks={checks}
                     checking={checking}
                     guided={guided}
+                    terminal={terminal}
                 />
 
                 {isLastStep && <FinishForm attemptId={attempt.id} />}
             </main>
+
+            <TutorChat attemptId={attempt.id} diAtasDock />
 
             <StepDock
                 attemptId={attempt.id}

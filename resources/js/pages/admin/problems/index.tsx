@@ -11,7 +11,9 @@ import {
     TableRow,
 } from '@/components/admin/data-table';
 import StatusBadge from '@/components/admin/status-badge';
+import LottieArt from '@/components/lottie-art';
 import Heading from '@/components/heading';
+import { aset } from '@/lib/aset';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import type { LevelOption, ProblemRow } from '@/types/admin';
@@ -94,21 +96,28 @@ export default function ProblemIndex({ student, problems, levels }: Props) {
                 </Form>
 
                 {queued > 0 && (
-                    <div className="space-y-1 rounded-xl border border-amber-500/40 bg-amber-500/5 p-4">
-                        <p className="text-sm font-medium">
-                            {queued} soal sedang digenerate
-                        </p>
-                        <p className="text-muted-foreground text-sm">
-                            Prosesnya berjalan di latar belakang dan memakan 20
-                            sampai 30 detik. Halaman ini menyegarkan diri
-                            sendiri. Kalau statusnya tidak berubah lebih dari
-                            satu menit, berarti pekerja antrean belum jalan —
-                            jalankan{' '}
-                            <span className="font-mono text-xs">
-                                php artisan queue:work
-                            </span>{' '}
-                            di terminal terpisah.
-                        </p>
+                    <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/5 p-4">
+                        <LottieArt
+                            {...aset.terbang}
+                            alt="Soal sedang disusun"
+                            className="hidden size-16 shrink-0 sm:block"
+                        />
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium">
+                                {queued} soal sedang digenerate
+                            </p>
+                            <p className="text-muted-foreground text-sm">
+                                Prosesnya berjalan di latar belakang dan memakan
+                                20 sampai 30 detik. Halaman ini menyegarkan diri
+                                sendiri. Kalau statusnya tidak berubah lebih
+                                dari satu menit, berarti pekerja antrean belum
+                                jalan — jalankan{' '}
+                                <span className="font-mono text-xs">
+                                    php artisan queue:work
+                                </span>{' '}
+                                di terminal terpisah.
+                            </p>
+                        </div>
                     </div>
                 )}
 

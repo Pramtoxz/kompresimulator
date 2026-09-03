@@ -9,14 +9,12 @@ import {
 } from '@/components/admin/data-table';
 import type { PracticeHistoryRow } from '@/types/latihan';
 
-export default function HistoryTable({
-    rows,
-}: {
-    rows: PracticeHistoryRow[];
-}) {
+export default function HistoryTable({ rows }: { rows: PracticeHistoryRow[] }) {
     return (
         <DataTable>
-            <TableHead columns={['Soal', 'Level', 'Durasi', 'Hasil', 'Selesai']} />
+            <TableHead
+                columns={['Soal', 'Level', 'Durasi', 'Hasil', 'Selesai']}
+            />
             <TableBody>
                 {rows.length === 0 && (
                     <EmptyRow

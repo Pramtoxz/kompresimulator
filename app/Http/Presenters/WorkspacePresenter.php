@@ -4,11 +4,13 @@ namespace App\Http\Presenters;
 
 use App\Enums\Level;
 use App\Enums\StepKey;
+use App\Guides\ProblemFacts;
 use App\Guides\StepCards;
 use App\Models\Attempt;
 use App\Models\AttemptFile;
 use App\Models\Problem;
 use App\Models\ProblemTestCase;
+use App\Practice\TerminalCommands;
 use App\Practice\ViewPreview;
 use App\Practice\WorkspaceFiles;
 use App\Tts\ClipLibrary;
@@ -75,6 +77,24 @@ class WorkspacePresenter
                 ? ClipLibrary::url(NarrationScript::scope($problem->framework, $step).'/'.$step->value.'/'.$index)
                 : null,
         ], array_keys($cards));
+    }
+
+    /**
+     * @return array{total: int}
+     */
+    public static function terminal(Attempt $attempt): array
+    {
+        $step = $attempt->steps->firstWhere('step_no', $attempt->current_step);
+
+        if ($step === null) {
+            return ['total' => 0];
+        }
+
+        return ['total' => count(TerminalCommands::for(
+            $attempt->problem->framework,
+            $step->step_key,
+            ProblemFacts::from($attempt->problem),
+        ))];
     }
 
     /**

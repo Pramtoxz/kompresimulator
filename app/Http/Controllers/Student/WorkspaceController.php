@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Actions\Practice\CreateTableFromSpec;
 use App\Actions\Practice\RevealHint;
 use App\Actions\Practice\RunAttemptChecks;
+use App\Actions\Practice\RunTerminalCommand;
 use App\Actions\Practice\RunWorkspaceMigration;
 use App\Actions\Practice\SaveWorkspaceFile;
 use App\Actions\Practice\StorePracticeRow;
@@ -15,6 +16,7 @@ use App\Http\Presenters\AttemptPresenter;
 use App\Http\Presenters\WorkspacePresenter;
 use App\Http\Requests\Student\RevealHintRequest;
 use App\Http\Requests\Student\RunChecksRequest;
+use App\Http\Requests\Student\RunTerminalRequest;
 use App\Http\Requests\Student\SaveWorkspaceFileRequest;
 use App\Models\Attempt;
 use App\Models\AttemptCheckResult;
@@ -54,7 +56,21 @@ class WorkspaceController extends Controller
             'files' => WorkspacePresenter::files($attempt),
             'preview' => WorkspacePresenter::preview($attempt),
             'database' => $this->database($attempt),
+            'terminal' => WorkspacePresenter::terminal($attempt),
         ]);
+    }
+
+    public function runTerminal(RunTerminalRequest $request, Attempt $attempt, RunTerminalCommand $runner): RedirectResponse
+    {
+        $step = $attempt->steps()
+            ->where('step_no', $attempt->current_step)
+            ->first();
+
+        abort_if($step === null, 404);
+
+        Inertia::flash('terminal', $runner->handle($attempt, $step->step_key, $request->command()));
+
+        return back();
     }
 
     public function saveFile(SaveWorkspaceFileRequest $request, Attempt $attempt, SaveWorkspaceFile $saver): RedirectResponse

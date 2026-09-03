@@ -28,16 +28,16 @@ class StartAttempt
                 'started_at' => now(),
             ]);
 
-            foreach (StepKey::cases() as $step) {
-                $attempt->steps()->create([
-                    'step_no' => $step->number(),
-                    'step_key' => $step,
-                    'status' => $step->number() === 1 ? StepStatus::InProgress : StepStatus::Pending,
-                    'started_at' => $step->number() === 1 ? now() : null,
-                ]);
-            }
-
             if ($problem->level !== Level::Akhir) {
+                foreach (StepKey::cases() as $step) {
+                    $attempt->steps()->create([
+                        'step_no' => $step->number(),
+                        'step_key' => $step,
+                        'status' => $step->number() === 1 ? StepStatus::InProgress : StepStatus::Pending,
+                        'started_at' => $step->number() === 1 ? now() : null,
+                    ]);
+                }
+
                 $attempt->setRelation('problem', $problem);
                 $this->workspace->handle($attempt);
             }

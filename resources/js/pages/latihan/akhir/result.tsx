@@ -77,51 +77,55 @@ export default function AttemptResult({
                         </CardContent>
                     </Card>
 
+                    {attempt.steps.length > 0 && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">
+                                    Langkah selesai
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="font-mono text-3xl">
+                                    {
+                                        attempt.steps.filter(
+                                            (step) => step.status === 'done',
+                                        ).length
+                                    }
+                                    /{attempt.steps.length}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    )}
+                </div>
+
+                {attempt.steps.length > 0 && (
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">
-                                Langkah selesai
+                                Waktu per langkah
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="font-mono text-3xl">
-                                {
-                                    attempt.steps.filter(
-                                        (step) => step.status === 'done',
-                                    ).length
-                                }
-                                /{attempt.steps.length}
-                            </p>
+                            <ul className="divide-border divide-y text-sm">
+                                {attempt.steps.map((step) => (
+                                    <li
+                                        key={step.step_key}
+                                        className="flex justify-between gap-4 py-2"
+                                    >
+                                        <span>
+                                            {step.step_no}. {step.label}
+                                        </span>
+                                        <span className="text-muted-foreground font-mono">
+                                            {step.duration_seconds === null
+                                                ? '—'
+                                                : `${(step.duration_seconds / 60).toFixed(1)} mnt`}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
                         </CardContent>
                     </Card>
-                </div>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-base">
-                            Waktu per langkah
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="divide-border divide-y text-sm">
-                            {attempt.steps.map((step) => (
-                                <li
-                                    key={step.step_key}
-                                    className="flex justify-between gap-4 py-2"
-                                >
-                                    <span>
-                                        {step.step_no}. {step.label}
-                                    </span>
-                                    <span className="text-muted-foreground font-mono">
-                                        {step.duration_seconds === null
-                                            ? '—'
-                                            : `${(step.duration_seconds / 60).toFixed(1)} mnt`}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                </Card>
+                )}
 
                 {feedback && (
                     <Card>
@@ -137,4 +141,3 @@ export default function AttemptResult({
         </>
     );
 }
-

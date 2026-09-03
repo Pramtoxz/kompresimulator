@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property string $kind
  * @property string $body
+ * @property int|null $score
  */
-#[Fillable(['attempt_id', 'kind', 'body', 'provider', 'model'])]
+#[Fillable(['attempt_id', 'reviewer_id', 'kind', 'score', 'body', 'provider', 'model'])]
 class AttemptFeedback extends Model
 {
     protected $table = 'attempt_feedbacks';

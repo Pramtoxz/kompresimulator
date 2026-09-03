@@ -7,7 +7,7 @@ function readTotal(field) {
     var element = document.querySelector('[name="' + field + '"]') || document.getElementById(field);
     if (!element) { return null; }
     var raw = element.value !== undefined && element.value !== null ? element.value : element.textContent;
-    var number = parseFloat(String(raw).replace(/[^0-9.,-]/g, '').replace(/\.(?=\d{3}\b)/g, '').replace(',', '.'));
+    var number = parseFloat(String(raw).replace(/[^0-9.,-]/g, '').replace(/.(?=d{3}\b)/g, '').replace(',', '.'));
     return isNaN(number) ? null : number;
 }
 
@@ -40,7 +40,7 @@ window.addEventListener('message', function (event) {
         }, '*');
     }, 60);
 });
-<\/script>
+</script>
 `;
 
 const style = `

@@ -26,4 +26,9 @@ enum Level: string
     {
         return $this !== self::Akhir;
     }
+
+    public function allowsManyProblems(): bool
+    {
+        return $this === self::Akhir;
+    }
 }

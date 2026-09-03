@@ -136,7 +136,20 @@ export type PracticeLevel = {
     value: string;
     label: string;
     description: string;
+    done: boolean;
+    finished: number;
+    repeatable: boolean;
     problem_id: number | null;
+    problems: PracticeProblemChoice[];
+};
+
+export type PracticeProblemChoice = {
+    id: number;
+    title: string | null;
+    done: boolean;
+    attempts: number;
+    duration_minutes: number | null;
+    within_target: boolean;
 };
 
 export type PracticeRunning = {

@@ -9,8 +9,10 @@ import CheckResults from './check-results';
 import DatabasePreview from './database-preview';
 import EditorCard from './editor-card';
 import PreviewFrame, { type PreviewHandle } from './preview-frame';
+import TerminalCard from './terminal-card';
 
 type Props = {
+    attemptId: number;
     stepKey: string;
     file: WorkspaceFile | undefined;
     onSaveFile: (content: string) => void;
@@ -24,9 +26,11 @@ type Props = {
     checks: WorkspaceCheck[];
     checking: boolean;
     guided: boolean;
+    terminal: { total: number };
 };
 
 export default function StepWorkbench({
+    attemptId,
     stepKey,
     file,
     onSaveFile,
@@ -40,13 +44,22 @@ export default function StepWorkbench({
     checks,
     checking,
     guided,
+    terminal,
 }: Props) {
-    if (stepKey === 'install' || stepKey === 'done') {
+    if (stepKey === 'done') {
         return null;
     }
 
     return (
         <div className="space-y-6">
+            {terminal.total > 0 && (
+                <TerminalCard
+                    attemptId={attemptId}
+                    total={terminal.total}
+                    fase={faseFor(stepKey)}
+                />
+            )}
+
             {file && (
                 <EditorCard
                     path={file.path}

@@ -13,6 +13,10 @@
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
+    --font-mono:
+        'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+        monospace;
+
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
@@ -126,63 +130,6 @@
     --sidebar-ring: oklch(0.55 0.12 255);
 }
 
-.dark {
-    /* DARK MODE: Deep Twilight - Tidak pekat, mencegah mata cepat lelah di ruang gelap */
-    --background: oklch(0.18 0.01 255);
-    --foreground: oklch(
-        0.9 0.01 255
-    ); /* Ash white, bukan putih murni (mencegah silau) */
-    --card: oklch(
-        0.22 0.015 255
-    ); /* Sedikit lebih terang dari bg agar soal menonjol */
-    --card-foreground: oklch(0.9 0.01 255);
-    --popover: oklch(0.22 0.015 255);
-    --popover-foreground: oklch(0.9 0.01 255);
-
-    /* PRIMARY: Terang dan jelas di latar gelap, tanpa menyilaukan */
-    --primary: oklch(0.65 0.12 255);
-    --primary-foreground: oklch(0.15 0.02 255);
-
-    --secondary: oklch(0.28 0.02 255);
-    --secondary-foreground: oklch(0.95 0.01 255);
-    --muted: oklch(0.25 0.02 255);
-    --muted-foreground: oklch(0.7 0.01 255);
-
-    --accent: oklch(0.3 0.04 150);
-    --accent-foreground: oklch(0.95 0.02 150);
-
-    --destructive: oklch(0.55 0.12 25);
-    --destructive-foreground: oklch(0.95 0 0);
-
-    --border: oklch(0.28 0.02 255);
-    --input: oklch(0.28 0.02 255);
-    --ring: oklch(0.65 0.12 255);
-
-    --chart-1: oklch(0.7 0.15 255);
-    --chart-2: oklch(0.75 0.12 150);
-    --chart-3: oklch(0.8 0.14 60);
-    --chart-4: oklch(0.7 0.15 300);
-    --chart-5: oklch(0.75 0.1 200);
-
-    --fase-terminal: oklch(0.78 0.1 200);
-    --fase-terminal-soft: oklch(0.3 0.04 200);
-    --fase-berkas: oklch(0.78 0.11 285);
-    --fase-berkas-soft: oklch(0.3 0.04 285);
-    --fase-layar: oklch(0.8 0.1 65);
-    --fase-layar-soft: oklch(0.3 0.04 65);
-
-    --sidebar: oklch(
-        0.16 0.01 255
-    ); /* Membingkai konten utama agar fokus ke tengah */
-    --sidebar-foreground: oklch(0.9 0.01 255);
-    --sidebar-primary: oklch(0.65 0.12 255);
-    --sidebar-primary-foreground: oklch(0.15 0.02 255);
-    --sidebar-accent: oklch(0.25 0.02 255);
-    --sidebar-accent-foreground: oklch(0.95 0.01 255);
-    --sidebar-border: oklch(0.28 0.02 255);
-    --sidebar-ring: oklch(0.65 0.12 255);
-}
-
 @layer utilities {
     .safe-t {
         padding-top: env(safe-area-inset-top, 0px);
@@ -209,5 +156,27 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@keyframes naik-halus {
+    from {
+        opacity: 0;
+        transform: translateY(0.6rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@utility naik-halus {
+    animation: naik-halus 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .naik-halus {
+        animation: none;
     }
 }

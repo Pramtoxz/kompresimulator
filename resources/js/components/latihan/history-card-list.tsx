@@ -26,9 +26,13 @@ export default function HistoryCardList({
                             {row.title ?? '—'}
                         </p>
                         <Badge
-                            variant={row.within_target ? 'default' : 'destructive'}
+                            variant={
+                                row.within_target ? 'default' : 'destructive'
+                            }
                         >
-                            {row.within_target ? 'Masuk target' : 'Lewat target'}
+                            {row.within_target
+                                ? 'Masuk target'
+                                : 'Lewat target'}
                         </Badge>
                     </div>
 

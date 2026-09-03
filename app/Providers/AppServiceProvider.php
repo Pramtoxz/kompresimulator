@@ -2,9 +2,14 @@
 
 namespace App\Providers;
 
+use App\Listeners\RecordLoginEvent;
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -24,6 +29,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->recordAuthEvents();
+    }
+
+    protected function recordAuthEvents(): void
+    {
+        Event::listen(Login::class, [RecordLoginEvent::class, 'onLogin']);
+        Event::listen(Logout::class, [RecordLoginEvent::class, 'onLogout']);
+        Event::listen(Failed::class, [RecordLoginEvent::class, 'onFailed']);
     }
 
     /**

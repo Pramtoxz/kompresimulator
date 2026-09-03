@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import { AtSign, KeyRound } from 'lucide-react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
@@ -27,29 +28,37 @@ export default function Login({ status }: Props) {
                         <div className="grid gap-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@kampus.ac.id"
-                                />
+                                <div className="relative">
+                                    <AtSign className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="email"
+                                        placeholder="email@kampus.ac.id"
+                                        className="h-11 pl-9"
+                                    />
+                                </div>
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Kata sandi</Label>
-                                <PasswordInput
-                                    id="password"
-                                    name="password"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="current-password"
-                                    placeholder="Kata sandi"
-                                />
+                                <div className="relative">
+                                    <KeyRound className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2" />
+                                    <PasswordInput
+                                        id="password"
+                                        name="password"
+                                        required
+                                        tabIndex={2}
+                                        autoComplete="current-password"
+                                        placeholder="Kata sandi dari admin"
+                                        className="h-11 pl-9"
+                                    />
+                                </div>
                                 <InputError message={errors.password} />
                             </div>
 
@@ -64,7 +73,8 @@ export default function Login({ status }: Props) {
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
+                                size="lg"
+                                className="mt-2 h-12 w-full"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -74,9 +84,9 @@ export default function Login({ status }: Props) {
                             </Button>
                         </div>
 
-                        <p className="text-muted-foreground text-center text-sm">
-                            Akun dibuatkan oleh admin. Hubungi admin bila belum
-                            menerima akun.
+                        <p className="text-muted-foreground border-t pt-5 text-center text-sm leading-relaxed">
+                            Belum punya akun? Tidak bisa daftar sendiri, semua
+                            dibuatkan admin. Colek dia dulu sebelum hari ujian.
                         </p>
                     </>
                 )}
@@ -92,6 +102,7 @@ export default function Login({ status }: Props) {
 }
 
 Login.layout = {
-    title: 'Masuk',
-    description: 'Masukkan email dan kata sandi yang diberikan admin',
+    title: 'Masuk dulu ya',
+    description:
+        'Pakai email dan kata sandi dari admin. Kalau lupa, tanya admin, jangan tanya Bg Dito.',
 };
