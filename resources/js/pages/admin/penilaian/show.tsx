@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
-import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/admin/reviews';
 
 type Attempt = {
@@ -36,10 +35,10 @@ type Attempt = {
 
 export default function ReviewShow({ attempt }: { attempt: Attempt }) {
     return (
-        <AppLayout>
+        <>
             <Head title={`Nilai ${attempt.student.name}`} />
 
-            <div className="mx-auto w-full max-w-4xl space-y-6 p-4 sm:p-6">
+            <div className="safe-x mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
                 <Button asChild variant="ghost" size="sm" className="-ml-2">
                     <Link href={index()}>
                         <ChevronLeft />
@@ -260,6 +259,6 @@ export default function ReviewShow({ attempt }: { attempt: Attempt }) {
                     </CardContent>
                 </Card>
             </div>
-        </AppLayout>
+        </>
     );
 }

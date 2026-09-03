@@ -3,7 +3,6 @@ import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import AppLayout from '@/layouts/app-layout';
 import { show } from '@/routes/admin/reviews';
 
 type Baris = {
@@ -23,10 +22,10 @@ export default function ReviewIndex({ attempts }: { attempts: Baris[] }) {
     const belum = attempts.filter((item) => !item.reviewed);
 
     return (
-        <AppLayout>
+        <>
             <Head title="Penilaian" />
 
-            <div className="mx-auto w-full max-w-5xl space-y-6 p-4 sm:p-6">
+            <div className="safe-x mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
                 <Heading
                     title="Penilaian"
                     description={`${belum.length} latihan menunggu dinilai dari ${attempts.length} yang sudah selesai.`}
@@ -96,6 +95,6 @@ export default function ReviewIndex({ attempts }: { attempts: Baris[] }) {
                     ))}
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }

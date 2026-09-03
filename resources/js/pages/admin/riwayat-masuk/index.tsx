@@ -11,7 +11,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/admin/auth-log';
 
 type Baris = {
@@ -47,10 +46,10 @@ const saringan = [
 
 export default function AuthLogIndex({ rows, event, totals }: Props) {
     return (
-        <AppLayout>
+        <>
             <Head title="Riwayat masuk" />
 
-            <div className="mx-auto w-full max-w-6xl space-y-6 p-4 sm:p-6">
+            <div className="safe-x mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
                 <Heading
                     title="Riwayat masuk"
                     description="Catatan setiap percobaan masuk, keluar, dan gagal, beserta alamat IP dan perangkatnya."
@@ -161,6 +160,6 @@ export default function AuthLogIndex({ rows, event, totals }: Props) {
                     Menampilkan 150 catatan terbaru.
                 </p>
             </div>
-        </AppLayout>
+        </>
     );
 }
