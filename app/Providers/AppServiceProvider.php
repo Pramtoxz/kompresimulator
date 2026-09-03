@@ -30,6 +30,17 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->recordAuthEvents();
+        $this->registerAiDrivers();
+    }
+
+    protected function registerAiDrivers(): void
+    {
+        $this->app->make(\Laravel\Ai\AiManager::class)->extend('openai-compatible', function ($app, array $config) {
+            return new \App\Ai\Providers\OpenAiCompatibleProvider(
+                $config,
+                $app->make(\Illuminate\Contracts\Events\Dispatcher::class),
+            );
+        });
     }
 
     protected function recordAuthEvents(): void
